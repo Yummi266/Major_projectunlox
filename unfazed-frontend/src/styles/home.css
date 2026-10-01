@@ -1,0 +1,845 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+/* ==========================================================================
+   RESET & STRICT HORIZONTAL CONTAINMENT (NO LEFT/RIGHT SCROLL)
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background: #f5f3ef;
+  color: #174b72;
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.home-page {
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background: #f5f3ef;
+  color: #174b72;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+
+/* ==========================================================================
+   NAVBAR - ORIGINAL COLOR (#f7f5ef) & ALIGNED WITH CONTENT
+   ========================================================================== */
+
+.home-navbar {
+  width: 100%;
+  height: 60px;
+  padding: 0 max(20px, calc((100% - 1050px) / 2));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f7f5ef;
+  border-bottom: 1px solid #d7d5cf;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #174b72;
+  text-decoration: none;
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  font-weight: 700;
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
+  transition: opacity 0.15s ease;
+}
+
+.home-brand:hover {
+  opacity: 0.9;
+}
+
+.home-brand-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #174b72;
+  color: white;
+  font-family: "Lora", Georgia, serif;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 2px 5px rgba(23, 75, 114, 0.2);
+}
+
+.home-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.5vw, 32px);
+  margin-left: auto;
+  margin-right: auto;
+  min-width: 0;
+}
+
+.home-nav a {
+  color: #3f637e;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+  position: relative;
+}
+
+.home-nav a:hover {
+  color: #174b72;
+}
+
+.home-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.nav-signin,
+.nav-get-started {
+  padding: 7px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+
+.nav-dashboard-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #174b72;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+  background: rgba(23, 75, 114, 0.05);
+  border: 1px solid rgba(23, 75, 114, 0.15);
+}
+
+.nav-dashboard-link:hover {
+  background: rgba(23, 75, 114, 0.12);
+  color: #0f3755;
+  transform: translateY(-1px);
+}
+
+.nav-signin {
+  color: #174b72;
+  border: 1px solid rgba(23, 75, 114, 0.3);
+  background: transparent;
+}
+
+.nav-signin:hover {
+  background: rgba(23, 75, 114, 0.06);
+  border-color: #174b72;
+}
+
+.nav-get-started {
+  color: white;
+  background: #174b72;
+  box-shadow: 0 2px 6px rgba(23, 75, 114, 0.2);
+}
+
+.nav-get-started:hover {
+  background: #0f3755;
+  box-shadow: 0 4px 10px rgba(23, 75, 114, 0.28);
+  transform: translateY(-1px);
+}
+
+
+/* ==========================================================================
+   HERO - ALIGNED TO THE 1050PX BOUNDARY
+   ========================================================================== */
+
+.hero-section {
+  width: 100%;
+  min-height: 300px;
+  padding: 40px max(20px, calc((100% - 1050px) / 2));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  background: #d9ecf9;
+}
+
+.hero-content {
+  flex: 1 1 500px;
+  max-width: 520px;
+  min-width: 0;
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 5px 13px;
+  margin-bottom: 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #245e88;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 1px 3px rgba(20, 60, 90, 0.06);
+}
+
+.hero-content h1 {
+  margin: 0;
+  color: #174b72;
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  font-size: clamp(30px, 3.8vw, 46px);
+  line-height: 1.12;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+}
+
+.hero-content p {
+  max-width: 440px;
+  margin: 14px 0 22px;
+  color: #49728f;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: break-word;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero-primary,
+.hero-secondary {
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+
+.hero-primary {
+  color: white;
+  background: #07517f;
+  box-shadow: 0 3px 8px rgba(7, 81, 127, 0.25);
+}
+
+.hero-primary:hover {
+  background: #053e63;
+  box-shadow: 0 5px 14px rgba(7, 81, 127, 0.32);
+  transform: translateY(-1px);
+}
+
+.hero-secondary {
+  color: #174b72;
+  background: white;
+  border: 1px solid rgba(23, 75, 114, 0.15);
+  box-shadow: 0 2px 6px rgba(20, 60, 90, 0.05);
+}
+
+.hero-secondary:hover {
+  background: #fbfbf9;
+  border-color: rgba(23, 75, 114, 0.3);
+  transform: translateY(-1px);
+}
+
+.hero-image-wrapper {
+  flex: 1 1 340px;
+  max-width: 360px;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.hero-image-card {
+  width: 100%;
+  max-width: 350px;
+  padding: 8px;
+  border: 6px solid white;
+  border-radius: 18px;
+  background: #c5e5f5;
+  box-shadow: 0 10px 26px rgba(20, 60, 90, 0.1);
+  transition: transform 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-image-card:hover {
+  transform: translateY(-2px);
+}
+
+.hero-image-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  display: block;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+
+/* ==========================================================================
+   TRUST STRIP - ALIGNED
+   ========================================================================== */
+
+.trust-strip {
+  width: 100%;
+  min-height: 50px;
+  padding: 14px max(20px, calc((100% - 1050px) / 2));
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: #f7f5ef;
+  border-bottom: 1px solid #eae8e1;
+  color: #174b72;
+  font-size: 12.5px;
+  font-weight: 600;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.trust-item svg {
+  flex-shrink: 0;
+  color: #174b72;
+}
+
+
+/* ==========================================================================
+   HOW IT WORKS - ALIGNED LEFT & RIGHT WITH OTHER SECTIONS
+   ========================================================================== */
+
+.how-section {
+  width: 100%;
+  padding: 38px max(20px, calc((100% - 1050px) / 2)) 28px;
+  background: #f0eeeb;
+}
+
+.how-section h2,
+.therapists-section h2 {
+  margin: 0 0 20px;
+  text-align: left;
+  color: #174b72;
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.step-card {
+  min-width: 0;
+  padding: 22px 20px;
+  background: #ffffff;
+  border: 1px solid #e5e3dc;
+  border-radius: 13px;
+  box-shadow: 0 2px 7px rgba(20, 60, 80, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(20, 60, 90, 0.07);
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.step-number {
+  font-weight: 700;
+  font-size: 14px;
+  color: #07517f;
+}
+
+.step-icon {
+  color: #174b72;
+  flex-shrink: 0;
+}
+
+.step-card h3 {
+  margin: 0 0 6px;
+  color: #174b72;
+  font-size: 15px;
+  font-weight: 600;
+  overflow-wrap: break-word;
+}
+
+.step-card p {
+  margin: 0;
+  color: #597d97;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+
+/* ==========================================================================
+   THERAPISTS - ALIGNED WITH STEPS AND PRICING
+   ========================================================================== */
+
+.therapists-section {
+  width: 100%;
+  padding: 16px max(20px, calc((100% - 1050px) / 2)) 38px;
+  background: #f0eeeb;
+}
+
+.therapist-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.therapist-card {
+  min-width: 0;
+  padding: 14px 14px 18px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e5e3dc;
+  border-radius: 14px;
+  box-shadow: 0 2px 7px rgba(20, 60, 80, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.therapist-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(20, 60, 90, 0.07);
+}
+
+/* DOCTOR PHOTO FITS THE FRAME IN ANY SCREEN SIZE */
+.therapist-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 10px;
+  display: block;
+}
+
+.therapist-card h3 {
+  margin: 10px 0 3px;
+  color: #174b72;
+  font-size: 15px;
+  font-weight: 600;
+  overflow-wrap: break-word;
+}
+
+.therapist-card p {
+  margin: 0;
+  color: #618299;
+  font-size: 12.5px;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+
+
+/* ==========================================================================
+   PRICING - ALIGNED WITH STEPS AND THERAPISTS
+   ========================================================================== */
+
+.pricing-section {
+  width: 100%;
+  padding: 46px max(20px, calc((100% - 1050px) / 2)) 50px;
+  background: #f7f5ef;
+}
+
+.pricing-heading {
+  max-width: 560px;
+  margin: 0 auto 28px;
+  text-align: center;
+}
+
+.pricing-heading>span {
+  display: inline-block;
+  color: #6b8ea3;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.pricing-heading h2 {
+  margin: 4px 0 8px;
+  color: #174b72;
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  overflow-wrap: break-word;
+}
+
+.pricing-heading p {
+  margin: 0;
+  color: #688597;
+  font-size: 13.5px;
+  overflow-wrap: break-word;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+  align-items: stretch;
+}
+
+.pricing-card {
+  position: relative;
+  min-width: 0;
+  padding: 26px 22px;
+  border: 1px solid #dedcd5;
+  border-radius: 14px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(20, 60, 90, 0.07);
+}
+
+.pricing-card.featured {
+  border: 2px solid #174b72;
+  box-shadow: 0 6px 20px rgba(23, 75, 114, 0.09);
+  transform: translateY(-4px);
+}
+
+.pricing-card.featured:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 26px rgba(23, 75, 114, 0.14);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -11px;
+  right: 16px;
+  padding: 4px 11px;
+  border-radius: 12px;
+  background: #174b72;
+  color: white;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pricing-card h3 {
+  margin: 0;
+  color: #174b72;
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  font-size: 20px;
+  font-weight: 600;
+  overflow-wrap: break-word;
+}
+
+.plan-description {
+  margin: 6px 0 14px;
+  color: #658193;
+  font-size: 12.5px;
+  line-height: 1.45;
+  min-height: 36px;
+  overflow-wrap: break-word;
+}
+
+.plan-price {
+  margin: 0 0 16px;
+  color: #174b72;
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.plan-price span {
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #7d96a5;
+  margin-left: 2px;
+}
+
+.pricing-card ul {
+  padding: 0;
+  margin: 0 0 20px;
+  list-style: none;
+  flex: 1;
+}
+
+.pricing-card li {
+  margin: 8px 0;
+  color: #4b6e86;
+  font-size: 12.5px;
+  line-height: 1.4;
+  overflow-wrap: break-word;
+}
+
+.plan-button {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 7px;
+  background: #174b72;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: all 0.18s ease;
+  box-shadow: 0 2px 6px rgba(23, 75, 114, 0.2);
+}
+
+.plan-button:hover {
+  background: #0f3755;
+  box-shadow: 0 4px 12px rgba(23, 75, 114, 0.28);
+  transform: translateY(-1px);
+}
+
+
+/* ==========================================================================
+   BOTTOM CTA - ALIGNED LEFT & RIGHT
+   ========================================================================== */
+
+.bottom-cta {
+  width: 100%;
+  min-height: 58px;
+  padding: 16px max(20px, calc((100% - 1050px) / 2));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #07517f;
+}
+
+.bottom-cta h2 {
+  margin: 0;
+  color: white;
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  font-weight: 500;
+  overflow-wrap: break-word;
+}
+
+.cta-button {
+  padding: 8px 20px;
+  border-radius: 7px;
+  background: #f5f3ed;
+  color: #174b72;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cta-button:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+  transform: translateY(-1px);
+}
+
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (PREVENTS ANY HORIZONTAL OVERFLOW)
+   ========================================================================== */
+
+@media (max-width: 860px) {
+
+  .home-navbar {
+    height: auto;
+    min-height: 54px;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .home-nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    gap: 18px;
+    margin-left: 0;
+  }
+
+  .hero-section {
+    flex-direction: column;
+    text-align: center;
+    padding-top: 32px;
+    padding-bottom: 32px;
+    gap: 24px;
+  }
+
+  .hero-content,
+  .hero-image-wrapper {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+  }
+
+  .hero-content p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .how-section h2,
+  .therapists-section h2 {
+    text-align: center;
+  }
+
+  .steps-grid,
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .therapist-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .pricing-card.featured {
+    transform: none;
+  }
+
+  .pricing-card.featured:hover {
+    transform: none;
+  }
+
+  .trust-strip {
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 20px;
+  }
+
+}
+
+
+@media (max-width: 500px) {
+
+  .home-nav {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .home-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home-nav-actions {
+    margin-left: auto;
+  }
+
+  .nav-signin,
+  .nav-get-started {
+    padding: 6px 12px;
+    font-size: 11.5px;
+  }
+
+  .hero-content h1 {
+    font-size: 28px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-primary,
+  .hero-secondary {
+    text-align: center;
+    width: 100%;
+  }
+
+  .bottom-cta {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .therapist-grid {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+
+  .cta-button {
+    width: 100%;
+    text-align: center;
+  }
+
+}
