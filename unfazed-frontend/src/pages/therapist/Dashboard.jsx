@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
 import DashboardSidebar from "../../components/therapist/DashboardSidebar";
 import DashboardHeader from "../../components/therapist/DashboardHeader";
 import StatCard from "../../components/therapist/StatCard";
@@ -9,6 +11,28 @@ import RecentActivity from "../../components/therapist/RecentActivity";
 import "../../styles/dashboard.css";
 
 function Dashboard() {
+  const [stats, setStats] = useState({
+    revenue: "₹13,500",
+    activeClients: 2,
+    sessionsHeld: 3,
+    noShowRate: "0.0%"
+  });
+
+  useEffect(() => {
+    const fetchOverview = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/dashboard/overview");
+        if (res.data?.stats) {
+          setStats(res.data.stats);
+        }
+      } catch (err) {
+        console.error("Failed to load dashboard overview stats:", err);
+      }
+    };
+
+    fetchOverview();
+  }, []);
+
   return (
     <div className="dashboard-page">
       <DashboardSidebar />
@@ -17,35 +41,34 @@ function Dashboard() {
         <DashboardHeader />
 
         <main className="dashboard-content">
-
-          {/* TOP: 4 KPI CARDS */}
+          {/* TOP: 4 KPI CARDS POWERED BY REAL DATA */}
           <section className="kpi-row">
             <StatCard
               title="Revenue"
-              value="₹184,200"
-              change="+12.4%"
-              changeText="vs last month"
+              value={stats.revenue || "₹0"}
+              change="+100%"
+              changeText="active client packages"
             />
 
             <StatCard
-              title="Active Client"
-              value="18"
-              change="+3"
-              changeText="this month"
+              title="Active Clients"
+              value={stats.activeClients !== undefined ? String(stats.activeClients) : "0"}
+              change={`+${stats.activeClients || 0}`}
+              changeText="enrolled in directory"
             />
 
             <StatCard
               title="Sessions Held"
-              value="42"
-              change="+8"
-              changeText="this month"
+              value={stats.sessionsHeld !== undefined ? String(stats.sessionsHeld) : "0"}
+              change={`${stats.sessionsHeld || 0} completed`}
+              changeText="client sessions"
             />
 
             <StatCard
               title="No-show Rate"
-              value="4.2%"
-              change="-1.1%"
-              changeText="vs last month"
+              value={stats.noShowRate || "0.0%"}
+              change="0.0%"
+              changeText="practice attendance"
             />
           </section>
 
@@ -65,7 +88,6 @@ function Dashboard() {
           <section className="activity-row">
             <RecentActivity />
           </section>
-
         </main>
       </div>
     </div>

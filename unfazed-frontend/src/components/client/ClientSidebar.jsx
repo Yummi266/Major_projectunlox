@@ -1,73 +1,72 @@
+import { Link, useLocation } from "react-router-dom";
 import {
-  HomeIcon,
+  DashboardIcon,
   CalendarIcon,
-  ChatIcon,
-  JournalIcon,
-  ExerciseIcon,
+  MessageSquareIcon,
+  PackageIcon,
   InvoiceIcon,
-  SettingsIcon
+  SettingsIcon,
 } from "../common/Icons";
 
 function ClientSidebar() {
+  const location = useLocation();
+
   return (
-    <aside className="client-sidebar">
+    <aside className="dashboard-sidebar">
+      <Link to="/" className="dashboard-brand" title="Back to Unfazed Home">
+        <span className="brand-icon">U</span>
+        <span className="brand-name">Unfazed</span>
+      </Link>
 
-      <div className="client-brand">
-        <div className="client-brand-icon">U</div>
-        <span>Unfazed</span>
-      </div>
+      <nav className="dashboard-nav">
+        <Link
+          to="/client/dashboard"
+          className={`nav-item ${location.pathname === "/client/dashboard" ? "active" : ""}`}
+        >
+          <span className="nav-item-icon">
+            <DashboardIcon size={16} />
+          </span>
+          <span>Dashboard</span>
+        </Link>
 
-      <div className="client-nav-section">
-        <span className="client-nav-title">CARE</span>
+        <Link
+          to="/client/sessions"
+          className={`nav-item ${location.pathname === "/client/sessions" ? "active" : ""}`}
+        >
+          <span className="nav-item-icon">
+            <CalendarIcon size={16} />
+          </span>
+          <span>My Sessions</span>
+        </Link>
 
-        <nav className="client-nav">
+        <Link to="#" className="nav-item">
+          <span className="nav-item-icon">
+            <MessageSquareIcon size={16} />
+          </span>
+          <span>Messages</span>
+        </Link>
 
-          <div className="client-nav-item active">
-            <HomeIcon size={19} />
-            <span>Home</span>
-          </div>
+        <Link to="#" className="nav-item">
+          <span className="nav-item-icon">
+            <PackageIcon size={16} />
+          </span>
+          <span>My Package</span>
+        </Link>
 
-          <div className="client-nav-item">
-            <CalendarIcon size={19} />
-            <span>Sessions</span>
-          </div>
+        <Link to="#" className="nav-item">
+          <span className="nav-item-icon">
+            <InvoiceIcon size={16} />
+          </span>
+          <span>Invoices</span>
+        </Link>
 
-          <div className="client-nav-item">
-            <ChatIcon size={19} />
-            <span>Messages</span>
-          </div>
-
-          <div className="client-nav-item">
-            <JournalIcon size={19} />
-            <span>Journal</span>
-          </div>
-
-          <div className="client-nav-item">
-            <ExerciseIcon size={19} />
-            <span>Exercises</span>
-          </div>
-
-        </nav>
-      </div>
-
-      <div className="client-nav-section account-section">
-        <span className="client-nav-title">ACCOUNT</span>
-
-        <nav className="client-nav">
-
-          <div className="client-nav-item">
-            <InvoiceIcon size={19} />
-            <span>Invoices</span>
-          </div>
-
-          <div className="client-nav-item">
-            <SettingsIcon size={19} />
-            <span>Settings</span>
-          </div>
-
-        </nav>
-      </div>
-
+        <Link to="#" className="nav-item">
+          <span className="nav-item-icon">
+            <SettingsIcon size={16} />
+          </span>
+          <span>Settings</span>
+        </Link>
+      </nav>
     </aside>
   );
 }

@@ -227,6 +227,25 @@
   border: 1.5px solid #ffffff;
 }
 
+.btn-badge-number {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  background: #c03838;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #ffffff;
+  line-height: 1;
+}
+
 .doctor-profile-wrap {
   display: flex;
   align-items: center;
@@ -481,78 +500,169 @@
 .attention-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 11px;
   padding: 4px 18px 18px;
   flex: 1;
 }
 
 .attention-item {
-  min-height: 48px;
-  padding: 10px 14px;
-  border-radius: 8px;
+  min-height: 52px;
+  padding: 11px 15px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  transition: transform 0.15s ease;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #e3edf2;
+  border-left-width: 4px;
+  box-shadow: 0 2px 7px rgba(21, 80, 120, 0.035);
+  transition: all 0.16s ease;
 }
 
 .attention-item:hover {
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(21, 80, 120, 0.06);
 }
 
-.attention-item strong,
-.attention-item span {
-  display: block;
+.attention-item-left {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+
+.attention-icon-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .attention-item strong {
-  color: #ffffff;
+  display: block;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.25;
 }
 
 .attention-item span {
+  display: block;
   margin-top: 3px;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 12px;
-  line-height: 1.2;
+  font-size: 11.5px;
+  line-height: 1.25;
+  font-weight: 500;
 }
 
 .attention-item button {
   flex-shrink: 0;
-  padding: 6px 12px;
-  border: 0;
-  border-radius: 6px;
-  background: #ffffff;
-  color: #264d65;
+  padding: 6px 13px;
+  border-radius: 7px;
   font-size: 11.5px;
   font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition: all 0.16s ease;
+  white-space: nowrap;
 }
 
-.attention-item button:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-}
-
+/* 1. CHECK-IN OVERDUE (Soft coral / pale pink with dark text) */
 .attention-danger {
-  background: #b94343;
+  background: #fff8f8;
+  border-color: #f7dede;
+  border-left-color: #e25866;
 }
 
+.attention-danger .attention-icon-badge {
+  background: #fde8e9;
+  color: #c93544;
+}
+
+.attention-danger strong {
+  color: #7d202b;
+}
+
+.attention-danger span {
+  color: #633339;
+}
+
+.attention-danger button {
+  background: #ffffff;
+  border: 1px solid #f3c2c7;
+  color: #b32a39;
+}
+
+.attention-danger button:hover {
+  background: #b32a39;
+  color: #ffffff;
+  border-color: #b32a39;
+}
+
+/* 2. INVOICE PENDING (Soft warm amber / light yellow with dark text) */
 .attention-warning {
-  background: #d5e2e2;
+  background: #fffcf4;
+  border-color: #f7eed8;
+  border-left-color: #e59a2c;
 }
 
-.attention-warning strong,
+.attention-warning .attention-icon-badge {
+  background: #faeed2;
+  color: #9c600b;
+}
+
+.attention-warning strong {
+  color: #694109;
+}
+
 .attention-warning span {
-  color: #49606b;
+  color: #674c1f;
 }
 
+.attention-warning button {
+  background: #ffffff;
+  border: 1px solid #f1d59f;
+  color: #8c5305;
+}
+
+.attention-warning button:hover {
+  background: #8c5305;
+  color: #ffffff;
+  border-color: #8c5305;
+}
+
+/* 3. PACKAGE ENDING SOON (Light ice-blue matching sidebar) */
 .attention-info {
-  background: #7195ad;
+  background: #f4f9fd;
+  border-color: #dceaf3;
+  border-left-color: #2b77a6;
+}
+
+.attention-info .attention-icon-badge {
+  background: #dbeaf4;
+  color: #17527b;
+}
+
+.attention-info strong {
+  color: #154060;
+}
+
+.attention-info span {
+  color: #3b5f77;
+}
+
+.attention-info button {
+  background: #ffffff;
+  border: 1px solid #cce1ef;
+  color: #155078;
+}
+
+.attention-info button:hover {
+  background: #155078;
+  color: #ffffff;
+  border-color: #155078;
 }
 
 

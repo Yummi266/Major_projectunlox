@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { DashboardIcon } from "../common/Icons";
+
 
 function Navbar() {
   return (
@@ -29,15 +29,6 @@ function Navbar() {
       </nav>
 
       <div className="home-nav-actions">
-        <Link
-          to="/dashboard"
-          className="nav-dashboard-link"
-          title="Open Therapist Dashboard"
-        >
-          <DashboardIcon size={14} />
-          <span>Dashboard</span>
-        </Link>
-
         <Link
           to="/login"
           className="nav-signin"

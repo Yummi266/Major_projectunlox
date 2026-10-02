@@ -310,6 +310,10 @@ body {
   color: #7998ad;
   font-size: 14px;
   z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 .password-toggle {
@@ -323,6 +327,9 @@ body {
   cursor: pointer;
   font-size: 14px;
   padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .password-toggle:hover {

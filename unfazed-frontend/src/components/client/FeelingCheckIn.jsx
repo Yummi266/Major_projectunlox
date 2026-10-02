@@ -2,56 +2,65 @@ import { useState } from "react";
 
 function FeelingCheckIn() {
   const [selectedFeeling, setSelectedFeeling] = useState("Good");
+  const [saved, setSaved] = useState(false);
 
   const feelings = [
-    {
-      name: "Low",
-      className: "feeling-low"
-    },
-    {
-      name: "Okay",
-      className: "feeling-okay"
-    },
-    {
-      name: "Good",
-      className: "feeling-good"
-    },
-    {
-      name: "Great",
-      className: "feeling-great"
-    },
-    {
-      name: "Anxious",
-      className: "feeling-anxious"
-    }
+    { name: "Low", emoji: "😔" },
+    { name: "Okay", emoji: "😐" },
+    { name: "Good", emoji: "🙂" },
+    { name: "Great", emoji: "😊" },
+    { name: "Anxious", emoji: "😰" }
   ];
 
+  const handleSave = () => {
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
+
   return (
-    <div className="feeling-card">
-
-      <h2>How are you feeling today?</h2>
-
-      <div className="feeling-options">
-
-        {feelings.map((feeling) => (
-          <button
-            key={feeling.name}
-            className={`feeling-option ${feeling.className} ${selectedFeeling === feeling.name ? "selected" : ""
-              }`}
-            onClick={() => setSelectedFeeling(feeling.name)}
-          >
-            <span className="feeling-icon">□</span>
-            <span>{feeling.name}</span>
-          </button>
-        ))}
-
+    <article className="dashboard-card feeling-card">
+      <div className="card-heading">
+        <h2>Daily Mood & Check-In</h2>
+        <span className="feeling-status-tag">
+          {saved ? "Saved ✓" : "Today"}
+        </span>
       </div>
 
-      <button className="save-checkin">
-        Save check-in
-      </button>
+      <div className="feeling-card-content">
+        <p className="card-subtext">How are you feeling this evening?</p>
 
-    </div>
+        <div className="feeling-chips-row">
+          {feelings.map((feeling) => (
+            <button
+              key={feeling.name}
+              type="button"
+              className={`feeling-chip ${
+                selectedFeeling === feeling.name ? "active" : ""
+              }`}
+              onClick={() => setSelectedFeeling(feeling.name)}
+            >
+              <span className="feeling-chip-emoji">{feeling.emoji}</span>
+              <span className="feeling-chip-name">{feeling.name}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className="feeling-note-wrap">
+          <input
+            type="text"
+            className="feeling-note-input"
+            placeholder="Add an optional reflection (e.g. calm after walk)..."
+          />
+          <button
+            type="button"
+            className="client-action-btn primary save-btn"
+            onClick={handleSave}
+          >
+            {saved ? "Logged ✓" : "Save Check-In"}
+          </button>
+        </div>
+      </div>
+    </article>
   );
 }
 

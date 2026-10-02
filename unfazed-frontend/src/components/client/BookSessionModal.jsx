@@ -1,0 +1,168 @@
+import { useState } from "react";
+import axios from "axios";
+import { authService } from "../../services/authService";
+
+function BookSessionModal({ isOpen, onClose, onBooked }) {
+  const [topic, setTopic] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("06:00 PM");
+  const [type, setType] = useState("Video");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  if (!isOpen) return null;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!date) {
+      setError("Please select a date for your session.");
+      return;
+    }
+
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const token = authService.getToken();
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+      // Calculate end time (50 min later)
+      const endTimeMap = {
+        "10:00 AM": "10:50 AM",
+        "11:00 AM": "11:50 AM",
+        "02:00 PM": "02:50 PM",
+        "04:00 PM": "04:50 PM",
+        "06:00 PM": "06:50 PM"
+      };
+
+      await axios.post(
+        "http://localhost:5000/api/appointments/client-book",
+        {
+          date,
+          startTime: time,
+          endTime: endTimeMap[time] || "06:50 PM",
+          type,
+          topic: topic.trim() || "Clinical Consultation & Check-in"
+        },
+        { headers }
+      );
+
+      onBooked();
+      onClose();
+    } catch (err) {
+      console.error("Failed to book session:", err);
+      setError(err.response?.data?.message || "Failed to book session. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Min date: tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDateStr = tomorrow.toISOString().split("T")[0];
+
+  return (
+    <div className="book-modal-overlay" onClick={onClose}>
+      <div className="book-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="book-modal-header">
+          <h3>Book a Therapy Session</h3>
+          <button className="book-modal-close" onClick={onClose} aria-label="Close modal">
+            &times;
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="book-modal-body">
+            {error && (
+              <div
+                style={{
+                  padding: "10px 14px",
+                  background: "#fef2f2",
+                  border: "1px solid #fecaca",
+                  borderRadius: "8px",
+                  color: "#b91c1c",
+                  fontSize: "12.5px",
+                  marginBottom: "16px"
+                }}
+              >
+                {error}
+              </div>
+            )}
+
+            <div className="book-form-group">
+              <label>Therapist</label>
+              <input
+                type="text"
+                readOnly
+                value="Dr. ThuWai (Relationship Counseling & CBT)"
+                style={{ background: "#f8fbfd", color: "#607f96" }}
+              />
+            </div>
+
+            <div className="book-form-group">
+              <label>Session Focus / Topic</label>
+              <input
+                type="text"
+                placeholder="e.g., Relational communication & boundaries"
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+              />
+            </div>
+
+            <div className="book-form-group">
+              <label>Session Date *</label>
+              <input
+                type="date"
+                min={minDateStr}
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="book-form-group">
+              <label>Time Slot *</label>
+              <select value={time} onChange={(e) => setTime(e.target.value)}>
+                <option value="10:00 AM">10:00 AM – 10:50 AM</option>
+                <option value="11:00 AM">11:00 AM – 11:50 AM</option>
+                <option value="02:00 PM">02:00 PM – 02:50 PM</option>
+                <option value="04:00 PM">04:00 PM – 04:50 PM</option>
+                <option value="06:00 PM">06:00 PM – 06:50 PM</option>
+              </select>
+            </div>
+
+            <div className="book-form-group">
+              <label>Session Modality</label>
+              <select value={type} onChange={(e) => setType(e.target.value)}>
+                <option value="Video">Video Session</option>
+                <option value="Chat">Chat Session</option>
+                <option value="In-Person">In-Person Consultation</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="book-modal-footer">
+            <button
+              type="button"
+              className="details-btn"
+              onClick={onClose}
+              disabled={submitting}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="join-btn"
+              disabled={submitting}
+            >
+              {submitting ? "Booking..." : "Confirm Booking"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default BookSessionModal;

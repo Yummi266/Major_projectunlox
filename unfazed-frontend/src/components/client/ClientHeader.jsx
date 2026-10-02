@@ -1,41 +1,62 @@
-import {
-  SearchIcon,
-  BellIcon,
-  ChatIcon
-} from "../common/Icons";
+import { SearchIcon, MailIcon, BellIcon, UserIcon } from "../common/Icons";
+import { authService } from "../../services/authService";
 
 function ClientHeader() {
+  const user = authService.getUser();
+  const displayName = user?.name || "Client";
+
+  const handleLogout = () => {
+    authService.logout();
+  };
+
   return (
-    <header className="client-header">
-
-      <div className="client-header-left">
-        <h2>My Dashboard</h2>
-        <span>Thu, 27 Sep 2026</span>
+    <header className="dashboard-header">
+      <div className="header-title">
+        <h1>Client Dashboard</h1>
+        <span className="header-date">
+          {new Date().toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+          })}
+        </span>
       </div>
 
-      <div className="client-header-right">
-
-        <div className="client-search">
-          <SearchIcon size={18} />
-          <span>Search Box</span>
+      <div className="header-actions">
+        <div className="header-search">
+          <SearchIcon size={15} className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search sessions, appointments, notes..."
+          />
         </div>
 
-        <button className="client-header-icon">
-          <BellIcon size={20} />
+        <button className="header-button header-icon-btn" type="button" aria-label="Mail messages" title="2 unread messages">
+          <MailIcon size={17} />
+          <span className="btn-badge-number">2</span>
         </button>
 
-        <button className="client-header-icon">
-          <ChatIcon size={20} />
+        <button className="header-button header-icon-btn" type="button" aria-label="Notifications" title="3 new notifications">
+          <BellIcon size={17} />
+          <span className="btn-badge-number">3</span>
         </button>
 
-        <span className="client-name">Alex</span>
+        <div className="doctor-profile-wrap">
+          <span className="doctor-name">
+            {displayName}
+          </span>
 
-        <div className="client-avatar">
-          AK
+          <button
+            className="profile-button"
+            type="button"
+            onClick={handleLogout}
+            title="Log out"
+            style={{ cursor: "pointer" }}
+          >
+            <UserIcon size={16} />
+          </button>
         </div>
-
       </div>
-
     </header>
   );
 }

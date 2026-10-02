@@ -5,9 +5,21 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "mongo": "\"C:\\Program Files\\MongoDB\\Server\\7.0\\bin\\mongod.exe\" --dbpath C:\\Users\\Admin\\data\\db"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.10.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
 }

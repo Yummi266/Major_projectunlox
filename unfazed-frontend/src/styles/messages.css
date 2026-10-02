@@ -1,0 +1,488 @@
+/* ============================================================ */
+/* THERAPIST MESSAGES PAGE STYLES                               */
+/* ============================================================ */
+
+.messages-content {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 24px 32px 48px;
+  box-sizing: border-box;
+}
+
+.messages-title {
+  margin-bottom: 22px;
+}
+
+.messages-title h1 {
+  margin: 0;
+  color: #154060;
+  font-size: 22px;
+  font-family: "Lora", Georgia, serif;
+  font-weight: 700;
+}
+
+.messages-title p {
+  margin: 4px 0 0;
+  color: #2c5370;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Stable Grid Container */
+.messages-panel {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  height: calc(100vh - 210px);
+  min-height: 520px;
+  max-height: calc(100vh - 210px);
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #dce8ef;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(23, 75, 114, 0.04);
+}
+
+/* ============================================================ */
+/* CONTACTS SIDEBAR                                             */
+/* ============================================================ */
+
+.message-contacts {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-right: 1px solid #e1edf2;
+  background: #ffffff;
+}
+
+.contacts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  min-height: 60px;
+  max-height: 60px;
+  flex-shrink: 0;
+  padding: 0 20px;
+  border-bottom: 1px solid #edf4f8;
+  box-sizing: border-box;
+}
+
+.contacts-header h2 {
+  margin: 0;
+  color: #154060;
+  font-size: 16px;
+  font-family: "Lora", Georgia, serif;
+  font-weight: 700;
+}
+
+.contacts-badge {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #e8f3f9;
+  color: #174d73;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.message-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 16px;
+  padding: 8px 12px;
+  border: 1px solid #d4e4ee;
+  border-radius: 8px;
+  background: #f8fbfd;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+}
+
+.message-search:focus-within {
+  background: #ffffff;
+  border-color: #155078;
+  box-shadow: 0 0 0 3px rgba(21, 80, 120, 0.08);
+}
+
+.message-search-icon {
+  color: #5f7f94;
+  flex-shrink: 0;
+}
+
+.message-search input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #1a425f;
+  font-size: 12.5px;
+  font-family: inherit;
+}
+
+.message-search input::placeholder {
+  color: #8da4b2;
+}
+
+.contact-list {
+  overflow-y: auto;
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* Contact Item - Prevents 3px shift on active */
+.contact-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 13px 18px;
+  gap: 12px;
+  border: 0;
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid #edf3f6;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.contact-item:hover {
+  background: #f5fafc;
+}
+
+.contact-item.active {
+  background: #eaf4fb;
+  border-left-color: #155078;
+}
+
+.contact-avatar,
+.message-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #e2f0fa;
+  color: #154e76;
+  border: 1px solid #c8e1f1;
+  font-weight: 700;
+}
+
+.contact-avatar {
+  width: 38px;
+  height: 38px;
+  font-size: 12.5px;
+}
+
+.contact-details {
+  min-width: 0;
+  flex: 1;
+}
+
+.contact-top,
+.contact-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.contact-top strong {
+  overflow: hidden;
+  color: #154060;
+  font-size: 13.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.contact-top span {
+  flex-shrink: 0;
+  color: #7a9cb0;
+  font-size: 11px;
+}
+
+.contact-bottom {
+  margin-top: 4px;
+}
+
+.contact-bottom p {
+  overflow: hidden;
+  margin: 0;
+  color: #557990;
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 1.35;
+}
+
+.unread-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #155078;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.contacts-empty-state {
+  padding: 30px 16px;
+  text-align: center;
+  color: #6a8c9e;
+  font-size: 13px;
+}
+
+/* ============================================================ */
+/* MESSAGE WINDOW                                               */
+/* ============================================================ */
+
+.message-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.message-window.no-selection {
+  align-items: center;
+  justify-content: center;
+  color: #557990;
+}
+
+.no-selection-prompt {
+  text-align: center;
+  padding: 40px;
+  font-size: 14px;
+}
+
+.message-window-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  min-height: 60px;
+  max-height: 60px;
+  flex-shrink: 0;
+  padding: 0 24px;
+  border-bottom: 1px solid #e1edf2;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.message-client-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.message-avatar {
+  width: 38px;
+  height: 38px;
+  font-size: 13px;
+}
+
+.message-client-info strong {
+  display: block;
+  color: #154060;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.message-client-info span {
+  display: block;
+  margin-top: 1px;
+  color: #1e7046;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+/* Conversation Thread */
+
+.conversation {
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #f8fbfd;
+  box-sizing: border-box;
+}
+
+.conversation-date {
+  align-self: center;
+  margin-bottom: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #e8f2f7;
+  color: #587c92;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.thread-loading,
+.thread-empty {
+  padding: 30px;
+  text-align: center;
+  color: #6a8c9e;
+  font-size: 13px;
+}
+
+.message-bubble-row {
+  display: flex;
+  width: 100%;
+}
+
+.message-bubble-row.client {
+  justify-content: flex-start;
+}
+
+.message-bubble-row.therapist {
+  justify-content: flex-end;
+}
+
+.message-bubble {
+  max-width: 65%;
+  padding: 10px 15px;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(21, 80, 120, 0.05);
+}
+
+.message-bubble-row.client .message-bubble {
+  background: #ffffff;
+  border: 1px solid #dce7ed;
+  border-bottom-left-radius: 3px;
+}
+
+.message-bubble-row.therapist .message-bubble {
+  background: #dceef8;
+  border: 1px solid #c9e3f1;
+  border-bottom-right-radius: 3px;
+}
+
+.message-bubble p {
+  margin: 0;
+  color: #133a54;
+  font-size: 13px;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+.message-bubble span {
+  display: block;
+  margin-top: 4px;
+  color: #7393a5;
+  font-size: 10.5px;
+  text-align: right;
+}
+
+/* Composer Form */
+
+.message-composer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 68px;
+  min-height: 68px;
+  max-height: 68px;
+  flex-shrink: 0;
+  padding: 14px 20px;
+  border-top: 1px solid #e1edf2;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.message-composer input {
+  flex: 1;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #d4e4ee;
+  border-radius: 8px;
+  outline: none;
+  background: #f8fbfd;
+  color: #174060;
+  font-size: 13px;
+  font-family: inherit;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+}
+
+.message-composer input:focus {
+  background: #ffffff;
+  border-color: #155078;
+  box-shadow: 0 0 0 3px rgba(21, 80, 120, 0.08);
+}
+
+.message-composer button {
+  border: 0;
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 20px;
+  background: #155078;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  font-family: inherit;
+  box-shadow: 0 2px 6px rgba(21, 80, 120, 0.2);
+  flex-shrink: 0;
+}
+
+.message-composer button:hover:not(:disabled) {
+  background: #0f3d5e;
+  transform: translateY(-1px);
+}
+
+.message-composer button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ============================================================ */
+/* RESPONSIVE DESIGN                                            */
+/* ============================================================ */
+
+@media (max-width: 900px) {
+  .messages-panel {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .messages-content {
+    padding: 20px 16px;
+  }
+
+  .messages-panel {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: none;
+  }
+
+  .message-contacts {
+    max-height: 280px;
+    border-right: 0;
+    border-bottom: 1px solid #e1edf2;
+  }
+
+  .message-window {
+    min-height: 480px;
+  }
+}

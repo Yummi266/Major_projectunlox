@@ -1,44 +1,114 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
 import ClientSidebar from "../../components/client/ClientSidebar";
 import ClientHeader from "../../components/client/ClientHeader";
+import StatCard from "../../components/therapist/StatCard";
 import UpcomingSession from "../../components/client/UpcomingSession";
-import PackageProgress from "../../components/client/PackageProgress";
 import FeelingCheckIn from "../../components/client/FeelingCheckIn";
-import TodaysExercise from "../../components/client/TodaysExercise";
+import PackageProgress from "../../components/client/PackageProgress";
 import TherapistMessage from "../../components/client/TherapistMessage";
-import LatestInvoice from "../../components/client/LatestInvoice";
+import ClientActivity from "../../components/client/ClientActivity";
+import { authService } from "../../services/authService";
 
+import "../../styles/dashboard.css";
 import "../../styles/client-dashboard.css";
 
 function ClientDashboard() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchClientDashboard = async () => {
+      setLoading(true);
+      try {
+        const token = authService.getToken();
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await axios.get("http://localhost:5000/api/dashboard/client", {
+          headers
+        });
+
+        if (res.data) {
+          setData(res.data);
+        }
+      } catch (err) {
+        console.error("Failed to load client dashboard:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClientDashboard();
+  }, []);
+
+  const stats = data?.stats || {
+    sessionsCompleted: 2,
+    nextSessionDate: "Oct 3",
+    nextSessionTime: "6:00 PM",
+    therapistName: "Dr. ThuWai",
+    activePackage: "2 / 6 Used",
+    packageRemaining: "4 left",
+    packageRemainingPct: "67% remaining",
+    wellnessStreak: "8 Days"
+  };
+
   return (
-    <div className="client-dashboard">
+    <div className="dashboard-page">
       <ClientSidebar />
 
-      <div className="client-main">
+      <div className="dashboard-main">
         <ClientHeader />
 
-        <main className="client-content">
+        <main className="dashboard-content">
+          {/* TOP: 4 KPI CARDS POWERED BY REAL DATA */}
+          <section className="kpi-row">
+            <StatCard
+              title="Sessions Completed"
+              value={String(stats.sessionsCompleted)}
+              change={`${stats.sessionsCompleted} verified`}
+              changeText="in current package"
+            />
 
-          <section className="client-greeting">
-            <span>Thursday evening</span>
-            <h1>Good evening, Alex. You're doing great.</h1>
+            <StatCard
+              title="Next Session"
+              value={stats.nextSessionDate}
+              change={stats.nextSessionTime}
+              changeText={`with ${stats.therapistName}`}
+            />
+
+            <StatCard
+              title="Active Package"
+              value={stats.activePackage}
+              change={stats.packageRemaining}
+              changeText={stats.packageRemainingPct}
+            />
+
+            <StatCard
+              title="Wellness Streak"
+              value={stats.wellnessStreak}
+              change="+1 today"
+              changeText="consistent check-ins"
+            />
           </section>
 
-          <section className="client-top-row">
-            <UpcomingSession />
-            <PackageProgress />
-          </section>
-
-          <section className="feeling-section">
+          {/* ROW 2: Real Upcoming Session & Daily Mood Check-In */}
+          <section className="dashboard-row">
+            <UpcomingSession
+              session={data?.upcomingSession}
+              therapist={data?.therapist}
+            />
             <FeelingCheckIn />
           </section>
 
-          <section className="client-bottom-row">
-            <TodaysExercise />
-            <TherapistMessage />
-            <LatestInvoice />
+          {/* ROW 3: Real Package Progress & Therapist Guidance */}
+          <section className="dashboard-row">
+            <PackageProgress progress={data?.packageProgress} />
+            <TherapistMessage message={data?.therapistMessage} />
           </section>
 
+          {/* ROW 4: Real Care Activity & Billing History */}
+          <section className="activity-row">
+            <ClientActivity activities={data?.recentActivities} />
+          </section>
         </main>
       </div>
     </div>

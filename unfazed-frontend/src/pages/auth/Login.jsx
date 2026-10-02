@@ -1,25 +1,51 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../../components/auth/AuthLayout";
+import { authService } from "../../services/authService";
+import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from "../../components/common/Icons";
 
 function Login() {
   const [role, setRole] = useState("therapist");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setErrorMessage("");
+    setLoading(true);
 
-    console.log("Login:", {
-      role,
-      rememberMe,
-    });
+    try {
+      const data = await authService.login(email, password, role);
+
+      // Redirect to the appropriate dashboard based on database role
+      if (data.user?.role === "client") {
+        navigate("/client/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      const msg =
+        error.response?.data?.message ||
+        "Login failed. Please check your credentials and make sure the server is running.";
+      setErrorMessage(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <AuthLayout
       role={role}
-      setRole={setRole}
+      setRole={(newRole) => {
+        setRole(newRole);
+        setErrorMessage("");
+      }}
       title={
         role === "therapist"
           ? "Sign in to your workspace"
@@ -32,15 +58,36 @@ function Login() {
       }
     >
       <form className="auth-form" onSubmit={handleSubmit}>
+        {errorMessage && (
+          <div
+            style={{
+              padding: "10px 14px",
+              marginBottom: "16px",
+              borderRadius: "8px",
+              backgroundColor: "#fef2f2",
+              border: "1px solid #fecaca",
+              color: "#b91c1c",
+              fontSize: "0.875rem",
+              lineHeight: "1.4"
+            }}
+          >
+            {errorMessage}
+          </div>
+        )}
+
         <div className="form-group">
           <label htmlFor="email">Email address</label>
 
           <div className="input-wrapper">
-            <span className="input-icon">✉</span>
+            <span className="input-icon">
+              <MailIcon size={16} />
+            </span>
 
             <input
               id="email"
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder={role === "therapist" ? "name@practice.com" : "name@example.com"}
               required
             />
@@ -51,11 +98,15 @@ function Login() {
           <label htmlFor="password">Password</label>
 
           <div className="input-wrapper">
-            <span className="input-icon">♙</span>
+            <span className="input-icon">
+              <LockIcon size={16} />
+            </span>
 
             <input
               id="password"
               type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               required
             />
@@ -66,7 +117,7 @@ function Login() {
               onClick={() => setShowPassword(!showPassword)}
               aria-label="Toggle password visibility"
             >
-              {showPassword ? "◉" : "◌"}
+              {showPassword ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}
             </button>
           </div>
         </div>
@@ -85,8 +136,8 @@ function Login() {
           <Link to="/forgot-password">Forgot password?</Link>
         </div>
 
-        <button type="submit" className="primary-button">
-          Sign in securely
+        <button type="submit" className="primary-button" disabled={loading}>
+          {loading ? "Signing in..." : "Sign in securely"}
         </button>
 
         <div className="auth-help">
