@@ -1,51 +1,16 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const Therapist = require("../models/Therapist");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Helper to get current therapist from token or fallback to default
-async function resolveTherapist(req) {
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    try {
-      const token = authHeader.split(" ")[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || "unfazed_default_secret_key");
-      const found = await Therapist.findById(decoded.id).select("-password");
-      if (found) return found;
-    } catch {
-      // invalid or expired token, fall through to default
-    }
-  }
-  // Fallback to the first therapist in the database
-  let therapist = await Therapist.findOne().select("-password");
-  if (!therapist) {
-    // Create default therapist if none exists
-    const hashedPassword = await bcrypt.hash("Therapist@123", 10);
-    therapist = await Therapist.create({
-      name: "Dr. Sarah Sharma",
-      email: "sarah@example.com",
-      password: hashedPassword,
-      phone: "+91 98765 43210",
-      specialization: "Clinical Psychology",
-      qualification: "M.Phil Clinical Psychology",
-      experience: 5,
-      bio: "Licensed clinical psychologist specializing in cognitive behavioral therapy, anxiety disorders, and interpersonal relational healing.",
-      practiceName: "Unfazed Wellness & Therapy",
-      defaultSessionDuration: "50 min"
-    });
-  }
-  return therapist;
-}
-
 // @desc    Get current therapist profile (used by Settings)
 // @route   GET /api/therapists/profile/current
-router.get("/profile/current", async (req, res) => {
+router.get("/profile/current", protect, authorize("therapist"), async (req, res) => {
   try {
-    const therapist = await resolveTherapist(req);
     res.status(200).json({
-      therapist
+      therapist: req.user
     });
   } catch (error) {
     res.status(500).json({
@@ -57,12 +22,9 @@ router.get("/profile/current", async (req, res) => {
 
 // @desc    Update current therapist profile (used by Settings)
 // @route   PUT /api/therapists/profile/current
-router.put("/profile/current", async (req, res) => {
+router.put("/profile/current", protect, authorize("therapist"), async (req, res) => {
   try {
-    const therapist = await resolveTherapist(req);
-    if (!therapist) {
-      return res.status(404).json({ message: "Therapist not found" });
-    }
+    const therapist = req.user;
 
     const {
       name,
@@ -127,9 +89,9 @@ router.put("/profile/current", async (req, res) => {
   }
 });
 
-// @desc    Change password
+// @desc    Change therapist password
 // @route   PUT /api/therapists/security/change-password
-router.put("/security/change-password", async (req, res) => {
+router.put("/security/change-password", protect, authorize("therapist"), async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
     if (!currentPassword || !newPassword) {
@@ -139,8 +101,7 @@ router.put("/security/change-password", async (req, res) => {
       return res.status(400).json({ message: "New password must be at least 6 characters" });
     }
 
-    const therapistDoc = await resolveTherapist(req);
-    const fullTherapist = await Therapist.findById(therapistDoc._id);
+    const fullTherapist = await Therapist.findById(req.user._id);
 
     const isMatch = await bcrypt.compare(currentPassword, fullTherapist.password);
     if (!isMatch) {
@@ -159,7 +120,7 @@ router.put("/security/change-password", async (req, res) => {
   }
 });
 
-// @desc    Get all therapists
+// @desc    Get all therapists (public for client onboarding selection)
 // @route   GET /api/therapists
 router.get("/", async (req, res) => {
   try {
@@ -176,7 +137,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// @desc    Get therapist by ID
+// @desc    Get therapist by ID (public for viewing credentials)
 // @route   GET /api/therapists/:id
 router.get("/:id", async (req, res) => {
   try {

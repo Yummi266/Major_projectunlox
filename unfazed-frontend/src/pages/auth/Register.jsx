@@ -12,7 +12,7 @@ import {
 } from "../../components/common/Icons";
 
 function Register() {
-  const [role, setRole] = useState("therapist");
+  const [role, setRole] = useState("client");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [specialization, setSpecialization] = useState("");
@@ -83,7 +83,7 @@ function Register() {
       description={
         role === "therapist"
           ? "Set up your secure workspace and start managing your practice."
-          : "Create your secure account and take the first step toward support."
+          : "Create your secure account to start your journey to healing."
       }
     >
       <form className="auth-form register-form" onSubmit={handleSubmit}>

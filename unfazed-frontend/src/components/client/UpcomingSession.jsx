@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { VideoSessionIcon, CalendarIcon, MessageSquareIcon } from "../common/Icons";
 
 function UpcomingSession({ session, therapist }) {
-  const therapistName = session?.therapistName || therapist?.name || "Dr. ThuWai";
+  const therapistName = session?.therapistName || therapist?.name || "Therapist";
   const therapistSpec = session?.therapistSpecialization || therapist?.specialization || "Relationship Counseling & CBT";
   const initials = therapistName
     .replace(/^Dr\.\s*/i, "")

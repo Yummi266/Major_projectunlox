@@ -1,6 +1,7 @@
 const express = require("express");
 const Package = require("../models/Package");
 const Client = require("../models/Client");
+const { protect, authorize, optionalProtect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -59,14 +60,21 @@ async function ensureSeedPackages() {
   }
 }
 
-// @desc    Get all packages with live client counts
+// @desc    Get all packages with live client counts (scoped to authenticated therapist)
 // @route   GET /api/packages
-router.get("/", async (req, res) => {
+router.get("/", optionalProtect, async (req, res) => {
   try {
     await ensureSeedPackages();
 
     const packages = await Package.find().sort({ price: 1 });
-    const clients = await Client.find().select("name email package sessionsUsed totalSessions isActive");
+    let clients = [];
+
+    // Only count enrolled clients if authenticated as therapist
+    if (req.user && req.role === "therapist") {
+      clients = await Client.find({ therapist: req.user._id }).select(
+        "name email package sessionsUsed totalSessions isActive"
+      );
+    }
 
     // Augment packages with live enrolled clients
     const enrichedPackages = packages.map((pkg) => {
@@ -105,16 +113,20 @@ router.get("/", async (req, res) => {
 
 // @desc    Get single package by ID
 // @route   GET /api/packages/:id
-router.get("/:id", async (req, res) => {
+router.get("/:id", optionalProtect, async (req, res) => {
   try {
     const pkg = await Package.findById(req.params.id);
     if (!pkg) {
       return res.status(404).json({ message: "Package not found" });
     }
 
-    const clients = await Client.find({
-      package: { $regex: new RegExp("^" + pkg.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") }
-    }).select("name email phone sessionsUsed totalSessions createdAt");
+    let clients = [];
+    if (req.user && req.role === "therapist") {
+      clients = await Client.find({
+        therapist: req.user._id,
+        package: { $regex: new RegExp("^" + pkg.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") }
+      }).select("name email phone sessionsUsed totalSessions createdAt");
+    }
 
     res.status(200).json({
       package: pkg,
@@ -130,7 +142,7 @@ router.get("/:id", async (req, res) => {
 
 // @desc    Create new package
 // @route   POST /api/packages
-router.post("/", async (req, res) => {
+router.post("/", protect, authorize("therapist"), async (req, res) => {
   try {
     const { name, sessions, duration, price, currency, status, description, features } = req.body;
 
@@ -168,7 +180,7 @@ router.post("/", async (req, res) => {
 
 // @desc    Update package
 // @route   PUT /api/packages/:id
-router.put("/:id", async (req, res) => {
+router.put("/:id", protect, authorize("therapist"), async (req, res) => {
   try {
     const { name, sessions, duration, price, currency, status, description, features } = req.body;
 
@@ -220,7 +232,7 @@ router.put("/:id", async (req, res) => {
 
 // @desc    Delete package
 // @route   DELETE /api/packages/:id
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", protect, authorize("therapist"), async (req, res) => {
   try {
     const pkg = await Package.findById(req.params.id);
     if (!pkg) {

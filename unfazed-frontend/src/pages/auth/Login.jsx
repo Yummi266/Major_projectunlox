@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import AuthLayout from "../../components/auth/AuthLayout";
 import { authService } from "../../services/authService";
 import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from "../../components/common/Icons";
@@ -12,16 +12,32 @@ function Login() {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [infoMessage, setInfoMessage] = useState("");
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("expired") === "true") {
+      setInfoMessage("Your session expired. Please sign in to continue.");
+    }
+  }, [location.search]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setErrorMessage("");
+    setInfoMessage("");
     setLoading(true);
 
     try {
       const data = await authService.login(email, password, role);
+
+      const returnUrl = location.state?.from?.pathname;
+      if (returnUrl) {
+        navigate(returnUrl);
+        return;
+      }
 
       // Redirect to the appropriate dashboard based on database role
       if (data.user?.role === "client") {
@@ -58,6 +74,23 @@ function Login() {
       }
     >
       <form className="auth-form" onSubmit={handleSubmit}>
+        {infoMessage && (
+          <div
+            style={{
+              padding: "10px 14px",
+              marginBottom: "16px",
+              borderRadius: "8px",
+              backgroundColor: "#f0fdf4",
+              border: "1px solid #bbf7d0",
+              color: "#15803d",
+              fontSize: "0.875rem",
+              lineHeight: "1.4"
+            }}
+          >
+            {infoMessage}
+          </div>
+        )}
+
         {errorMessage && (
           <div
             style={{
@@ -135,6 +168,7 @@ function Login() {
 
           <Link to="/forgot-password">Forgot password?</Link>
         </div>
+
 
         <button type="submit" className="primary-button" disabled={loading}>
           {loading ? "Signing in..." : "Sign in securely"}

@@ -1,18 +1,27 @@
 const express = require("express");
-const { protect, authorize } = require("../middleware/authMiddleware");
+const { protect, authorize, getAuthTherapistId, getAuthClientId } = require("../middleware/authMiddleware");
 const Client = require("../models/Client");
 const Note = require("../models/Note");
 const Appointment = require("../models/Appointment");
 const Package = require("../models/Package");
+const Therapist = require("../models/Therapist");
+const Message = require("../models/Message");
 
 const router = express.Router();
 
-// Real therapist dashboard overview stats
-router.get("/overview", async (req, res) => {
+// Real therapist dashboard overview stats - isolated per authenticated therapist
+router.get("/overview", protect, authorize("therapist"), async (req, res) => {
   try {
-    const clients = await Client.find();
-    const notes = await Note.find();
-    const appointments = await Appointment.find();
+    const therapistId = req.user._id;
+    const currentTherapist = req.user;
+
+    const clientFilter = { therapist: therapistId };
+    const apptFilter = { therapist: therapistId };
+    const noteFilter = { therapist: therapistId };
+
+    const clients = await Client.find(clientFilter);
+    const notes = await Note.find(noteFilter);
+    const appointments = await Appointment.find(apptFilter);
     const packages = await Package.find();
 
     const clientsCount = clients.length;
@@ -24,7 +33,7 @@ router.get("/overview", async (req, res) => {
       packageMap[p.name.toLowerCase().trim()] = Number(p.price) || 0;
     });
 
-    // Calculate real revenue from client packages and session fees
+    // Calculate real revenue strictly from this therapist's clients & appointments
     let totalRevenue = 0;
     let totalSessionsUsed = 0;
 
@@ -52,7 +61,7 @@ router.get("/overview", async (req, res) => {
         ? ((cancelledAppts.length / appointments.length) * 100).toFixed(1)
         : "0.0";
 
-    // Today's appointments count
+    // Today's appointments count for this therapist
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date();
@@ -64,9 +73,9 @@ router.get("/overview", async (req, res) => {
       return d >= startOfDay && d <= endOfDay;
     }).length;
 
-    // Recent activities built from real database notes and clients
-    const recentNotes = await Note.find().sort({ createdAt: -1 }).limit(4);
-    const recentClients = await Client.find().sort({ createdAt: -1 }).limit(4);
+    // Recent activities built from this therapist's notes and clients
+    const recentNotes = await Note.find(noteFilter).sort({ createdAt: -1 }).limit(4);
+    const recentClients = await Client.find(clientFilter).sort({ createdAt: -1 }).limit(4);
 
     const activities = [];
     recentNotes.forEach((n) => {
@@ -88,12 +97,12 @@ router.get("/overview", async (req, res) => {
 
     activities.sort((a, b) => new Date(b.time) - new Date(a.time));
 
-    // Clients needing attention (e.g. packages ending soon)
+    // Clients needing attention for this therapist
     const endingSoonClients = clients.filter(
       (c) => (c.totalSessions || 6) - (c.sessionsUsed || 0) <= 1
     );
 
-    // 6-Month Real Revenue Trend for RevenueOverview line chart
+    // 6-Month Real Revenue Trend for this therapist
     const now = new Date();
     const monthlyTrend = [];
     for (let i = 5; i >= 0; i--) {
@@ -116,7 +125,6 @@ router.get("/overview", async (req, res) => {
         return (a.status === "Completed" || a.isCompleted) && aDate >= mStart && aDate <= mEnd;
       }).length * 1500;
 
-      // Ensure current months reflect current database reality
       if (i === 0) {
         rev = Math.max(rev, totalRevenue);
       } else if (i === 1 && rev === 0 && totalRevenue > 0) {
@@ -130,6 +138,11 @@ router.get("/overview", async (req, res) => {
     }
 
     res.status(200).json({
+      therapist: {
+        id: currentTherapist?._id,
+        name: currentTherapist?.name,
+        email: currentTherapist?.email
+      },
       stats: {
         activeClients: activeClientsCount,
         totalClients: clientsCount,
@@ -147,7 +160,7 @@ router.get("/overview", async (req, res) => {
   }
 });
 
-// Therapist dashboard data (Authorized for therapists only)
+// Authorized therapist dashboard route
 router.get("/therapist", protect, authorize("therapist"), async (req, res) => {
   try {
     res.status(200).json({
@@ -159,54 +172,28 @@ router.get("/therapist", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// Client dashboard data powered by real MongoDB models
-router.get("/client", async (req, res) => {
+// Client dashboard data isolated strictly to the authenticated client
+router.get("/client", protect, authorize("client"), async (req, res) => {
   try {
-    const jwt = require("jsonwebtoken");
-    const Therapist = require("../models/Therapist");
-    const Message = require("../models/Message");
+    const client = req.user;
 
-    let client = null;
-    const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      try {
-        const token = authHeader.split(" ")[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || "unfazed_default_secret_key");
-        client = await Client.findById(decoded.id).select("-password");
-      } catch {}
-    }
-
-    if (!client && req.query.clientId) {
-      client = await Client.findById(req.query.clientId).select("-password");
-    }
-
-    if (!client) {
-      client = await Client.findOne().select("-password");
-    }
-
-    if (!client) {
-      return res.status(404).json({ message: "No client profile found" });
-    }
-
-    // Get assigned therapist or primary therapist
-    let therapist = null;
-    if (client.therapist) {
-      therapist = await Therapist.findById(client.therapist).select("-password");
-    }
-    if (!therapist) {
-      therapist = await Therapist.findOne().select("-password");
+    // Get assigned therapist for this specific client
+    let therapist = client.therapist;
+    if (!therapist || !therapist.name) {
+      const tId = client.therapist?._id || client.therapist;
+      if (tId) {
+        therapist = await Therapist.findById(tId).select("-password");
+      }
     }
 
     const therapistDisplayName = therapist
       ? therapist.name.startsWith("Dr.")
         ? therapist.name
         : `Dr. ${therapist.name}`
-      : "Dr. ThuWai";
+      : "Care Provider";
 
-    // Appointments for this client
-    const appointments = await Appointment.find({
-      $or: [{ client: client._id }, { clientName: client.name }]
-    }).sort({ date: 1, startTime: 1 });
+    // Appointments strictly for this specific client
+    const appointments = await Appointment.find({ client: client._id }).sort({ date: 1, startTime: 1 });
 
     const upcomingAppts = appointments.filter(
       (a) => !a.isCompleted && a.status !== "Completed" && a.status !== "Cancelled"
@@ -215,19 +202,19 @@ router.get("/client", async (req, res) => {
 
     const nextSession = upcomingAppts.length > 0 ? upcomingAppts[0] : null;
 
-    // Package progress calculation
+    // Package progress calculation for this specific client
     const used = typeof client.sessionsUsed === "number" ? client.sessionsUsed : completedAppts.length;
     const total = typeof client.totalSessions === "number" && client.totalSessions > 0 ? client.totalSessions : 6;
     const remaining = Math.max(0, total - used);
     const percentage = Math.min(100, Math.round((used / total) * 100));
 
-    // Latest message from therapist
+    // Latest message from assigned therapist to this client
     const latestTherapistMsg = await Message.findOne({
-      clientName: client.name,
+      client: client._id,
       sender: "therapist"
     }).sort({ createdAt: -1 });
 
-    // Recent care activities
+    // Recent care activities for this client
     const activities = [];
     completedAppts.slice(-2).reverse().forEach((a) => {
       activities.push({
@@ -274,6 +261,7 @@ router.get("/client", async (req, res) => {
         totalSessions: total
       },
       therapist: {
+        id: therapist?._id,
         name: therapistDisplayName,
         specialization: therapist?.specialization || "Relationship Counseling & CBT",
         qualification: therapist?.qualification || "M.Sc Clinical Psychology"

@@ -44,7 +44,7 @@ function ClientDashboard() {
     sessionsCompleted: 2,
     nextSessionDate: "Oct 3",
     nextSessionTime: "6:00 PM",
-    therapistName: "Dr. ThuWai",
+    therapistName: data?.therapist?.name || "Therapist",
     activePackage: "2 / 6 Used",
     packageRemaining: "4 left",
     packageRemainingPct: "67% remaining",

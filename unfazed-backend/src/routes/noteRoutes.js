@@ -1,15 +1,20 @@
 const express = require("express");
 const Note = require("../models/Note");
 const Client = require("../models/Client");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// @desc    Get all clinical notes
+// Apply protect & authorize("therapist") to all clinical note routes
+router.use(protect, authorize("therapist"));
+
+// @desc    Get all clinical notes strictly for the authenticated therapist
 // @route   GET /api/notes
 router.get("/", async (req, res) => {
   try {
     const { search, status } = req.query;
-    let query = {};
+    const therapistId = req.user._id;
+    let query = { therapist: therapistId };
 
     if (status && status !== "all") {
       query.status = status;
@@ -17,12 +22,18 @@ router.get("/", async (req, res) => {
 
     if (search && search.trim()) {
       const searchRegex = new RegExp(search.trim(), "i");
-      query.$or = [
-        { clientName: searchRegex },
-        { sessionNumber: searchRegex },
-        { content: searchRegex },
-        { preview: searchRegex }
+      query.$and = [
+        { therapist: therapistId },
+        {
+          $or: [
+            { clientName: searchRegex },
+            { sessionNumber: searchRegex },
+            { content: searchRegex },
+            { preview: searchRegex }
+          ]
+        }
       ];
+      delete query.therapist;
     }
 
     const notes = await Note.find(query)
@@ -42,16 +53,19 @@ router.get("/", async (req, res) => {
   }
 });
 
-// @desc    Get single note by ID
+// @desc    Get single note strictly belonging to authenticated therapist
 // @route   GET /api/notes/:id
 router.get("/:id", async (req, res) => {
   try {
-    const note = await Note.findById(req.params.id)
+    const note = await Note.findOne({
+      _id: req.params.id,
+      therapist: req.user._id
+    })
       .populate("client", "name email phone")
       .populate("therapist", "name email specialization");
 
     if (!note) {
-      return res.status(404).json({ message: "Note not found" });
+      return res.status(404).json({ message: "Note not found or unauthorized" });
     }
 
     res.status(200).json(note);
@@ -63,7 +77,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// @desc    Create new clinical note
+// @desc    Create new clinical note strictly for authenticated therapist
 // @route   POST /api/notes
 router.post("/", async (req, res) => {
   try {
@@ -74,24 +88,26 @@ router.post("/", async (req, res) => {
       sessionDate,
       content,
       status,
-      tags,
-      therapistId
+      tags
     } = req.body;
 
     if (!content || !content.trim()) {
       return res.status(400).json({ message: "Note content is required" });
     }
 
+    const therapistId = req.user._id;
     let finalClientName = rawClientName ? rawClientName.trim() : "";
     let finalClientId = null;
 
     if (clientId) {
-      const foundClient = await Client.findById(clientId);
+      const foundClient = await Client.findOne({ _id: clientId, therapist: therapistId });
       if (foundClient) {
         finalClientId = foundClient._id;
         if (!finalClientName) {
           finalClientName = foundClient.name;
         }
+      } else {
+        return res.status(404).json({ message: "Client not found in your practice" });
       }
     }
 
@@ -99,25 +115,19 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ message: "Client name or client ID is required" });
     }
 
-    const preview =
-      content.length > 95
-        ? content.substring(0, 95).trim() + "..."
-        : content.trim();
-
     const note = await Note.create({
       client: finalClientId,
       clientName: finalClientName,
-      therapist: therapistId || null,
+      therapist: therapistId,
       sessionNumber: sessionNumber ? sessionNumber.trim() : "Session 1",
       sessionDate: sessionDate ? new Date(sessionDate) : new Date(),
       content: content.trim(),
-      preview,
-      status: status === "Draft" ? "Draft" : "Completed",
+      status: status || "Completed",
       tags: Array.isArray(tags) ? tags : []
     });
 
     res.status(201).json({
-      message: "Note created successfully",
+      message: "Clinical note saved successfully",
       note
     });
   } catch (error) {
@@ -128,32 +138,28 @@ router.post("/", async (req, res) => {
   }
 });
 
-// @desc    Update clinical note
+// @desc    Update clinical note strictly for owning therapist
 // @route   PUT /api/notes/:id
 router.put("/:id", async (req, res) => {
   try {
-    const { sessionNumber, sessionDate, content, status, tags } = req.body;
+    const { content, status, sessionNumber, sessionDate, tags } = req.body;
+    const therapistId = req.user._id;
 
     const updates = {};
-    if (sessionNumber !== undefined) updates.sessionNumber = sessionNumber;
-    if (sessionDate !== undefined) updates.sessionDate = new Date(sessionDate);
-    if (content !== undefined) {
-      updates.content = content.trim();
-      updates.preview =
-        content.length > 95
-          ? content.substring(0, 95).trim() + "..."
-          : content.trim();
-    }
+    if (content !== undefined) updates.content = content.trim();
     if (status !== undefined) updates.status = status;
+    if (sessionNumber !== undefined) updates.sessionNumber = sessionNumber.trim();
+    if (sessionDate !== undefined) updates.sessionDate = new Date(sessionDate);
     if (tags !== undefined) updates.tags = tags;
 
-    const note = await Note.findByIdAndUpdate(req.params.id, updates, {
-      new: true,
-      runValidators: true
-    }).populate("client", "name email phone");
+    const note = await Note.findOneAndUpdate(
+      { _id: req.params.id, therapist: therapistId },
+      updates,
+      { new: true, runValidators: true }
+    ).populate("client", "name email phone");
 
     if (!note) {
-      return res.status(404).json({ message: "Note not found" });
+      return res.status(404).json({ message: "Note not found or unauthorized" });
     }
 
     res.status(200).json({
@@ -168,14 +174,18 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// @desc    Delete clinical note
+// @desc    Delete clinical note strictly for owning therapist
 // @route   DELETE /api/notes/:id
 router.delete("/:id", async (req, res) => {
   try {
-    const note = await Note.findByIdAndDelete(req.params.id);
+    const therapistId = req.user._id;
+    const note = await Note.findOneAndDelete({
+      _id: req.params.id,
+      therapist: therapistId
+    });
 
     if (!note) {
-      return res.status(404).json({ message: "Note not found" });
+      return res.status(404).json({ message: "Note not found or unauthorized" });
     }
 
     res.status(200).json({

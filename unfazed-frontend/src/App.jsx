@@ -15,6 +15,9 @@ import Settings from "./pages/therapist/Settings";
 
 import ClientDashboard from "./pages/client/ClientDashboard";
 import Sessions from "./pages/client/Sessions";
+import ClientMessages from "./pages/client/Messages";
+import ClientPackage from "./pages/client/Package";
+import ClientInvoices from "./pages/client/Invoices";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -125,6 +128,33 @@ function App() {
           element={
             <ProtectedRoute allowedRole="client">
               <Sessions />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/client/messages"
+          element={
+            <ProtectedRoute allowedRole="client">
+              <ClientMessages />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/client/package"
+          element={
+            <ProtectedRoute allowedRole="client">
+              <ClientPackage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/client/invoices"
+          element={
+            <ProtectedRoute allowedRole="client">
+              <ClientInvoices />
             </ProtectedRoute>
           }
         />

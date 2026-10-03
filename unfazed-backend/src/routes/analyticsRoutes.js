@@ -2,6 +2,7 @@ const express = require("express");
 const Appointment = require("../models/Appointment");
 const Client = require("../models/Client");
 const Package = require("../models/Package");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -10,13 +11,17 @@ const formatCurrency = (val) => "₹" + Number(val).toLocaleString();
 
 // @desc    Get practice analytics and graph data based on selected period
 // @route   GET /api/analytics
-router.get("/", async (req, res) => {
+router.get("/", protect, authorize("therapist"), async (req, res) => {
   try {
     const period = req.query.period || "6months"; // '6months' | '30days' | '12months'
 
-    // Fetch all live records from database
-    const clients = await Client.find();
-    const appointments = await Appointment.find();
+    const therapistId = req.user._id;
+    const clientFilter = { therapist: therapistId };
+    const apptFilter = { therapist: therapistId };
+
+    // Fetch live records strictly isolated to this authenticated therapist
+    const clients = await Client.find(clientFilter);
+    const appointments = await Appointment.find(apptFilter);
     const packages = await Package.find();
 
     // Map packages for price lookup

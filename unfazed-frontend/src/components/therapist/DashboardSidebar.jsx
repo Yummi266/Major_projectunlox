@@ -8,10 +8,16 @@ import {
   PackageIcon,
   BarChartIcon,
   SettingsIcon,
+  UserIcon,
 } from "../common/Icons";
+import { authService } from "../../services/authService";
 
 function DashboardSidebar() {
   const location = useLocation();
+
+  const handleLogout = () => {
+    authService.logout();
+  };
 
   return (
     <aside className="dashboard-sidebar">
@@ -20,7 +26,7 @@ function DashboardSidebar() {
         <span className="brand-name">Unfazed</span>
       </Link>
 
-      <nav className="dashboard-nav">
+      <nav className="dashboard-nav" style={{ flex: 1 }}>
         <Link
           to="/dashboard"
           className={`nav-item ${location.pathname === "/dashboard" ? "active" : ""}`}
@@ -101,6 +107,39 @@ function DashboardSidebar() {
           <span>Settings</span>
         </Link>
       </nav>
+
+      {/* Switcher & Sign Out */}
+      <div style={{ paddingTop: "16px", borderTop: "1px solid #c0d8e8", display: "flex", flexDirection: "column", gap: "6px" }}>
+        <Link
+          to="/client/dashboard"
+          className="nav-item"
+          title="Switch to Client View"
+          style={{ fontSize: "12.5px", background: "rgba(21, 80, 120, 0.08)" }}
+        >
+          <span className="nav-item-icon">⇄</span>
+          <span>Client View</span>
+        </Link>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="nav-item"
+          style={{
+            background: "transparent",
+            border: 0,
+            cursor: "pointer",
+            width: "100%",
+            textAlign: "left",
+            fontSize: "12.5px",
+            color: "#6b889c"
+          }}
+        >
+          <span className="nav-item-icon">
+            <UserIcon size={14} />
+          </span>
+          <span>Sign Out</span>
+        </button>
+      </div>
     </aside>
   );
 }

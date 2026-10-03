@@ -9,7 +9,24 @@ const api = axios.create({
   }
 });
 
-// Request interceptor to attach Bearer token if present
+// Configure token on both global axios and custom api instance
+export const setAuthToken = (token) => {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete axios.defaults.headers.common["Authorization"];
+    delete api.defaults.headers.common["Authorization"];
+  }
+};
+
+// Set token immediately on bundle load
+const initialToken = localStorage.getItem("token");
+if (initialToken) {
+  setAuthToken(initialToken);
+}
+
+// Request interceptor for custom api instance
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -18,8 +35,40 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Request interceptor for global axios (handles direct axios.get / axios.post throughout app)
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Response interceptor helper
+const handleAuthError = (error) => {
+  if (error.response && error.response.status === 401) {
+    const currentPath = window.location.pathname;
+    if (
+      currentPath !== "/login" &&
+      currentPath !== "/register" &&
+      currentPath !== "/"
+    ) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("user");
+      setAuthToken(null);
+      window.location.href = "/login?expired=true";
+    }
+  }
+  return Promise.reject(error);
+};
+
+api.interceptors.response.use((response) => response, handleAuthError);
+axios.interceptors.response.use((response) => response, handleAuthError);
+
 export const authService = {
-  // Login for therapist or client
+  // Login user (therapist or client)
   login: async (email, password, role) => {
     const response = await api.post("/auth/login", {
       email,
@@ -31,33 +80,58 @@ export const authService = {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.user.role);
       localStorage.setItem("user", JSON.stringify(response.data.user));
+      setAuthToken(response.data.token);
     }
     return response.data;
   },
 
-  // Register a therapist
+  // Register a therapist account
   registerTherapist: async (data) => {
     const response = await api.post("/auth/therapist/register", data);
     if (response.data.token) {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.user.role);
       localStorage.setItem("user", JSON.stringify(response.data.user));
+      setAuthToken(response.data.token);
     }
     return response.data;
   },
 
-  // Register a client
+  // Register a client account
   registerClient: async (data) => {
     const response = await api.post("/auth/client/register", data);
     if (response.data.token) {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.user.role);
       localStorage.setItem("user", JSON.stringify(response.data.user));
+      setAuthToken(response.data.token);
     }
     return response.data;
   },
 
-  // Get current user from storage
+  // Check if user is authenticated with a valid, non-expired JWT
+  isAuthenticated: () => {
+    const token = localStorage.getItem("token");
+    if (!token) return false;
+
+    try {
+      const payloadBase64 = token.split(".")[1];
+      if (!payloadBase64) return false;
+      const decoded = JSON.parse(atob(payloadBase64));
+      if (decoded.exp && decoded.exp * 1000 < Date.now()) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("user");
+        setAuthToken(null);
+        return false;
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  // Fetch current user from localStorage
   getUser: () => {
     try {
       const user = localStorage.getItem("user");
@@ -67,27 +141,28 @@ export const authService = {
     }
   },
 
-  // Get current token
+  // Get raw token string
   getToken: () => {
     return localStorage.getItem("token");
   },
 
-  // Get current role
+  // Get active role
   getRole: () => {
     return localStorage.getItem("role");
   },
 
-  // Fetch verified profile from backend
+  // Fetch authenticated profile from backend via GET /auth/me
   getProfile: async () => {
     const response = await api.get("/auth/me");
     return response.data;
   },
 
-  // Logout
+  // Sign out and clear stored session
   logout: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("user");
+    setAuthToken(null);
     window.location.href = "/login";
   }
 };

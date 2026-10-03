@@ -21,13 +21,13 @@ function ClientActivity({ activities = [] }) {
     {
       time: new Date(),
       type: "session",
-      title: "Completed 50-minute Video Session with Dr. ThuWai",
+      title: "Completed 50-minute Video Session with your therapist",
       actionLabel: "Session Summary"
     },
     {
       time: new Date(Date.now() - 24 * 60 * 60 * 1000),
       type: "message",
-      title: "Received session reflection & guidance from Dr. ThuWai",
+      title: "Received session reflection & guidance from your therapist",
       actionLabel: "View Message"
     },
     {
@@ -66,9 +66,10 @@ function ClientActivity({ activities = [] }) {
       case "booking":
         return "/client/sessions";
       case "message":
-        return "/messages";
+        return "/client/messages";
+      case "invoice":
       default:
-        return "#";
+        return "/client/invoices";
     }
   };
 

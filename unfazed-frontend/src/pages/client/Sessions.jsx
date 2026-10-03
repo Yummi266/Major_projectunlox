@@ -11,6 +11,7 @@ import "../../styles/client-sessions.css";
 function Sessions() {
   const [upcoming, setUpcoming] = useState([]);
   const [completed, setCompleted] = useState([]);
+  const [therapist, setTherapist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
 
@@ -26,6 +27,7 @@ function Sessions() {
       if (res.data) {
         setUpcoming(res.data.upcoming || []);
         setCompleted(res.data.completed || []);
+        setTherapist(res.data.therapist || null);
       }
     } catch (err) {
       console.error("Failed to load client sessions:", err);
@@ -73,6 +75,9 @@ function Sessions() {
         isOpen={isBookModalOpen}
         onClose={() => setIsBookModalOpen(false)}
         onBooked={fetchSessions}
+        therapistName={therapist?.name}
+        therapistSpecialization={therapist?.specialization}
+        currentTherapistId={therapist?.id || therapist?._id}
       />
     </div>
   );

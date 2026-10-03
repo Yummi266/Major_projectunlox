@@ -5,7 +5,7 @@ function TherapistMessage({ message }) {
   const text =
     message?.text ||
     "Remember to practice your grounding reflection before our next consultation. You made noticeable progress during our session.";
-  const senderName = message?.senderName || "Dr. ThuWai";
+  const senderName = message?.senderName || "Your Therapist";
   const specialization = message?.specialization || "Relationship Counseling & CBT";
 
   return (
@@ -26,7 +26,7 @@ function TherapistMessage({ message }) {
         </div>
 
         <div className="message-actions">
-          <Link to="/messages" style={{ textDecoration: "none" }}>
+          <Link to="/client/messages" style={{ textDecoration: "none" }}>
             <button type="button" className="client-action-btn primary">
               <MessageSquareIcon size={14} />
               <span>Reply to {senderName}</span>

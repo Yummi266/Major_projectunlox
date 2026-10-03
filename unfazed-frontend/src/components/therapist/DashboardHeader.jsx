@@ -12,7 +12,10 @@ function DashboardHeader() {
         const res = await axios.get("http://localhost:5000/api/therapists/profile/current");
         if (res.data?.therapist) {
           setUser(res.data.therapist);
-          localStorage.setItem("user", JSON.stringify(res.data.therapist));
+          const currentUser = authService.getUser();
+          if (currentUser && (currentUser.id === res.data.therapist._id || currentUser._id === res.data.therapist._id || currentUser.email === res.data.therapist.email)) {
+            localStorage.setItem("user", JSON.stringify({ ...currentUser, ...res.data.therapist }));
+          }
         }
       } catch {
         // fallback to storage
@@ -35,7 +38,7 @@ function DashboardHeader() {
     ? user.name.startsWith("Dr.")
       ? user.name
       : `Dr. ${user.name}`
-    : "Dr. ThuWai";
+    : "Doctor";
 
   const handleLogout = () => {
     authService.logout();
