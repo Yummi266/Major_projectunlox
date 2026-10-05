@@ -6,31 +6,25 @@ const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Helper to format currency
 const formatCurrency = (val) => "₹" + Number(val).toLocaleString();
 
-// @desc    Get practice analytics and graph data based on selected period
-// @route   GET /api/analytics
 router.get("/", protect, authorize("therapist"), async (req, res) => {
   try {
-    const period = req.query.period || "6months"; // '6months' | '30days' | '12months'
+    const period = req.query.period || "6months"; 
 
     const therapistId = req.user._id;
     const clientFilter = { therapist: therapistId };
     const apptFilter = { therapist: therapistId };
 
-    // Fetch live records strictly isolated to this authenticated therapist
     const clients = await Client.find(clientFilter);
     const appointments = await Appointment.find(apptFilter);
     const packages = await Package.find();
 
-    // Map packages for price lookup
     const packagePriceMap = {};
     packages.forEach((pkg) => {
       packagePriceMap[pkg.name.toLowerCase().trim()] = Number(pkg.price) || 0;
     });
 
-    // 1. Practice Overview Metrics
     const totalClients = clients.length;
     const activeClientsCount = clients.filter((c) => c.isActive !== false).length;
 
@@ -51,7 +45,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
       }
     });
 
-    // Completed appointments in DB
     const completedAppointments = appointments.filter(
       (a) => a.status === "Completed" || a.isCompleted === true
     );
@@ -61,7 +54,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
     ).length;
     const cancelledCount = appointments.filter((a) => a.status === "Cancelled").length;
 
-    // Total estimated revenue: package sales + standalone completed session fees
     const totalRevenue = Math.max(totalClientPackageRevenue, completedCount * 1500);
 
     const averageSessionsPerClient =
@@ -82,12 +74,10 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
         ? ((cancelledCount / appointments.length) * 100).toFixed(1)
         : "0.0";
 
-    // 2. Generate Real Graph Data based on Selected Period
     let graphData = [];
     const now = new Date();
 
     if (period === "30days") {
-      // 4 Weekly intervals over the last 30 days
       const weeks = [
         { label: "Week 1", daysAgoStart: 28, daysAgoEnd: 21 },
         { label: "Week 2", daysAgoStart: 21, daysAgoEnd: 14 },
@@ -114,7 +104,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
         };
       });
     } else if (period === "12months") {
-      // Last 12 months
       const months = [];
       for (let i = 11; i >= 0; i--) {
         const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -136,7 +125,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
           return d >= mStart && d <= mEnd;
         });
 
-        // Clients registered in this month
         const newClients = clients.filter((c) => {
           const d = new Date(c.createdAt);
           return d >= mStart && d <= mEnd;
@@ -148,7 +136,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
           monthRev += pkg;
         });
 
-        // Ensure current month reflects current database totals
         if (m.month === now.toLocaleString("default", { month: "short" }) && monthRev === 0) {
           monthRev = totalRevenue;
         }
@@ -160,7 +147,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
         };
       });
     } else {
-      // Default: Last 6 months
       const months = [];
       for (let i = 5; i >= 0; i--) {
         const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -183,7 +169,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
         });
 
         let monthRev = 0;
-        // Check clients registered in or assigned this month
         const newClients = clients.filter((c) => {
           const d = new Date(c.createdAt);
           return d >= mStart && d <= mEnd;
@@ -196,11 +181,9 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
 
         monthRev += appts.filter((a) => a.status === "Completed" || a.isCompleted).length * 1500;
 
-        // If current month (last item), ensure it reflects current database reality
         if (idx === months.length - 1) {
           monthRev = Math.max(monthRev, totalRevenue);
         } else if (idx === months.length - 2 && monthRev === 0 && totalRevenue > 0) {
-          // Previous month baseline
           monthRev = Math.round(totalRevenue * 0.7);
         }
 
@@ -212,7 +195,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
       });
     }
 
-    // Normalize graph bars between 15% and 100% height for CSS display
     const maxRev = Math.max(...graphData.map((g) => g.revenue), 1000);
     const enrichedGraphData = graphData.map((g) => {
       const pct = maxRev > 0 ? Math.round((g.revenue / maxRev) * 100) : 15;
@@ -223,7 +205,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
       };
     });
 
-    // 3. Session Summary breakdown
     const sessionSummary = {
       scheduled: appointments.length > 0 ? appointments.length : totalSessionsPurchased,
       completed: completedCount > 0 ? completedCount : totalSessionsUsed,
@@ -231,7 +212,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
       noShow: 0
     };
 
-    // 4. Client Activity breakdown
     const newClientsCount = clients.filter((c) => {
       const d = new Date(c.createdAt);
       const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);

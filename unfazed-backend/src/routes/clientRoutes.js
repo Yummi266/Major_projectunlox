@@ -7,8 +7,6 @@ const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// @desc    Get clients belonging strictly to the authenticated therapist
-// @route   GET /api/clients
 router.get("/", protect, authorize("therapist"), async (req, res) => {
   try {
     const clients = await Client.find({ therapist: req.user._id })
@@ -28,8 +26,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// @desc    Get single client by ID (strictly isolated to owning therapist or the client themselves)
-// @route   GET /api/clients/:id
 router.get("/:id", protect, async (req, res) => {
   try {
     let client = null;
@@ -62,8 +58,6 @@ router.get("/:id", protect, async (req, res) => {
   }
 });
 
-// @desc    Add new client (automatically assigns strictly to authenticated therapist)
-// @route   POST /api/clients
 router.post("/", protect, authorize("therapist"), async (req, res) => {
   try {
     const { name, email, phone, password, package: clientPackage } = req.body;
@@ -125,8 +119,6 @@ router.post("/", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// @desc    Delete client strictly belonging to authenticated therapist
-// @route   DELETE /api/clients/:id
 router.delete("/:id", protect, authorize("therapist"), async (req, res) => {
   try {
     const client = await Client.findOneAndDelete({
@@ -147,8 +139,6 @@ router.delete("/:id", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// @desc    Update client package (renew or upgrade) strictly for authenticated client
-// @route   POST /api/clients/me/package
 router.post("/me/package", protect, authorize("client"), async (req, res) => {
   try {
     const { packageName, sessions } = req.body;
@@ -183,8 +173,6 @@ router.post("/me/package", protect, authorize("client"), async (req, res) => {
   }
 });
 
-// @desc    Assign or change client's therapist strictly for authenticated client
-// @route   PUT /api/clients/me/therapist
 router.put("/me/therapist", protect, authorize("client"), async (req, res) => {
   try {
     const { therapistId } = req.body;

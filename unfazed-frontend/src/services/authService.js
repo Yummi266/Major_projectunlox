@@ -9,7 +9,6 @@ const api = axios.create({
   }
 });
 
-// Configure token on both global axios and custom api instance
 export const setAuthToken = (token) => {
   if (token) {
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -20,13 +19,11 @@ export const setAuthToken = (token) => {
   }
 };
 
-// Set token immediately on bundle load
 const initialToken = localStorage.getItem("token");
 if (initialToken) {
   setAuthToken(initialToken);
 }
 
-// Request interceptor for custom api instance
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -35,7 +32,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Request interceptor for global axios (handles direct axios.get / axios.post throughout app)
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -45,7 +41,6 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor helper
 const handleAuthError = (error) => {
   if (error.response && error.response.status === 401) {
     const currentPath = window.location.pathname;
@@ -68,7 +63,6 @@ api.interceptors.response.use((response) => response, handleAuthError);
 axios.interceptors.response.use((response) => response, handleAuthError);
 
 export const authService = {
-  // Login user (therapist or client)
   login: async (email, password, role) => {
     const response = await api.post("/auth/login", {
       email,
@@ -85,7 +79,6 @@ export const authService = {
     return response.data;
   },
 
-  // Register a therapist account
   registerTherapist: async (data) => {
     const response = await api.post("/auth/therapist/register", data);
     if (response.data.token) {
@@ -97,7 +90,6 @@ export const authService = {
     return response.data;
   },
 
-  // Register a client account
   registerClient: async (data) => {
     const response = await api.post("/auth/client/register", data);
     if (response.data.token) {
@@ -109,7 +101,6 @@ export const authService = {
     return response.data;
   },
 
-  // Check if user is authenticated with a valid, non-expired JWT
   isAuthenticated: () => {
     const token = localStorage.getItem("token");
     if (!token) return false;
@@ -131,7 +122,6 @@ export const authService = {
     }
   },
 
-  // Fetch current user from localStorage
   getUser: () => {
     try {
       const user = localStorage.getItem("user");
@@ -141,23 +131,19 @@ export const authService = {
     }
   },
 
-  // Get raw token string
   getToken: () => {
     return localStorage.getItem("token");
   },
 
-  // Get active role
   getRole: () => {
     return localStorage.getItem("role");
   },
 
-  // Fetch authenticated profile from backend via GET /auth/me
   getProfile: async () => {
     const response = await api.get("/auth/me");
     return response.data;
   },
 
-  // Sign out and clear stored session
   logout: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");

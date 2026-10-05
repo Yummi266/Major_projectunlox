@@ -41,7 +41,6 @@ function AnalyticsOverview({ data, loading, periodLabel = "Last 6 months" }) {
     clientRetention: "100%"
   };
 
-  // Determine dynamic Y-axis values based on chart data
   const revenues = revenueChart.map((r) => r.revenue || 0);
   const maxRev = Math.max(...revenues, 15000);
   const yAxis = [
@@ -54,7 +53,7 @@ function AnalyticsOverview({ data, loading, periodLabel = "Last 6 months" }) {
 
   return (
     <div className="analytics-wrapper">
-      {/* 4 Top KPI Cards */}
+      {}
       <section className="analytics-stats">
         <div className="analytics-stat-card">
           <span>Total Revenue</span>
@@ -81,7 +80,7 @@ function AnalyticsOverview({ data, loading, periodLabel = "Last 6 months" }) {
         </div>
       </section>
 
-      {/* Main Grid: Revenue Trend + Session Summary */}
+      {}
       <section className="analytics-main-grid">
         <div className="analytics-card revenue-chart-card">
           <div className="analytics-card-header">
@@ -165,7 +164,7 @@ function AnalyticsOverview({ data, loading, periodLabel = "Last 6 months" }) {
         </div>
       </section>
 
-      {/* Bottom Grid: Client Activity + Practice Overview */}
+      {}
       <section className="analytics-bottom-grid">
         <div className="analytics-card">
           <div className="analytics-card-header">

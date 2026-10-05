@@ -76,7 +76,6 @@ const authorize = (...roles) => {
   };
 };
 
-// Optional protect: populates req.user if valid token provided, but doesn't block unauthenticated requests
 const optionalProtect = async (req, res, next) => {
   let token;
   if (
@@ -115,12 +114,10 @@ const optionalProtect = async (req, res, next) => {
       req.role = decoded.role || (user.specialization ? "therapist" : "client");
     }
   } catch {
-    // Ignore invalid or expired token for optional auth
   }
   next();
 };
 
-// Resolve therapist ID strictly from authenticated req.user
 const getAuthTherapistId = (req) => {
   if (req.user && (req.role === "therapist" || req.user.specialization)) {
     return req.user._id;
@@ -128,7 +125,6 @@ const getAuthTherapistId = (req) => {
   return null;
 };
 
-// Resolve client ID strictly from authenticated req.user
 const getAuthClientId = (req) => {
   if (req.user && req.role === "client") {
     return req.user._id;

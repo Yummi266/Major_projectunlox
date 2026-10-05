@@ -51,7 +51,6 @@ function ClientMessageWindow({ clientId, therapistInfo, onMessageSent }) {
 
     fetchHistory();
 
-    // Poll every 8 seconds for new incoming messages from therapist
     const interval = setInterval(fetchHistory, 8000);
 
     return () => {

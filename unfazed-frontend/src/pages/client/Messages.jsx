@@ -72,13 +72,13 @@ function ClientMessages() {
           </div>
 
           <div className="client-messages-layout">
-            {/* Main Interactive Chat Window */}
+            {}
             <ClientMessageWindow
               clientId={clientId}
               therapistInfo={therapist}
             />
 
-            {/* Sidebar Care Guidelines & Quick Info */}
+            {}
             <aside className="client-messages-sidebar">
               <div className="care-info-card">
                 <h4>Your Care Provider</h4>

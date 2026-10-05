@@ -2,12 +2,11 @@ const express = require("express");
 const Message = require("../models/Message");
 const Client = require("../models/Client");
 const Therapist = require("../models/Therapist");
+const { createNotification } = require("../services/notificationService");
 const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// @desc    Get active conversations strictly for authenticated therapist
-// @route   GET /api/messages/conversations
 router.get("/conversations", protect, authorize("therapist"), async (req, res) => {
   try {
     const therapistId = req.user._id;
@@ -48,7 +47,6 @@ router.get("/conversations", protect, authorize("therapist"), async (req, res) =
       })
     );
 
-    // Sort by most recent activity
     conversations.sort((a, b) => new Date(b.lastTime) - new Date(a.lastTime));
 
     res.status(200).json({
@@ -63,14 +61,11 @@ router.get("/conversations", protect, authorize("therapist"), async (req, res) =
   }
 });
 
-// @desc    Get message history strictly between authenticated user and counterparty
-// @route   GET /api/messages/:clientId
 router.get("/:clientId", protect, async (req, res) => {
   try {
     let client = null;
 
     if (req.role === "therapist") {
-      // Must belong to this therapist
       client = await Client.findOne({
         _id: req.params.clientId,
         therapist: req.user._id
@@ -80,19 +75,16 @@ router.get("/:clientId", protect, async (req, res) => {
         return res.status(404).json({ message: "Client not found or unauthorized" });
       }
 
-      // Mark unread client messages as read
       await Message.updateMany(
         { client: client._id, sender: "client", isRead: false },
         { isRead: true }
       );
     } else if (req.role === "client") {
-      // Client can only view their own messages
       if (req.user._id.toString() !== req.params.clientId) {
         return res.status(403).json({ message: "Forbidden: You cannot access other client messages" });
       }
       client = req.user;
 
-      // Mark unread therapist messages as read
       await Message.updateMany(
         { client: client._id, sender: "therapist", isRead: false },
         { isRead: true }
@@ -121,8 +113,6 @@ router.get("/:clientId", protect, async (req, res) => {
   }
 });
 
-// @desc    Send a message (strictly binds sender and therapist identity)
-// @route   POST /api/messages
 router.post("/", protect, async (req, res) => {
   try {
     const { clientId, text } = req.body;
@@ -166,6 +156,26 @@ router.post("/", protect, async (req, res) => {
       text: text.trim(),
       isRead: false
     });
+
+    if (senderRole === "client") {
+      createNotification({
+        recipient: therapistId,
+        recipientRole: "therapist",
+        type: "message",
+        title: `Message from ${clientDoc.name}`,
+        message: text.trim().length > 90 ? text.trim().substring(0, 90) + "..." : text.trim(),
+        relatedId: message._id,
+      });
+    } else {
+      createNotification({
+        recipient: clientDoc._id,
+        recipientRole: "client",
+        type: "message",
+        title: `Message from ${req.user.name.startsWith("Dr.") ? req.user.name : `Dr. ${req.user.name}`}`,
+        message: text.trim().length > 90 ? text.trim().substring(0, 90) + "..." : text.trim(),
+        relatedId: message._id,
+      });
+    }
 
     res.status(201).json({
       message: "Message sent successfully",

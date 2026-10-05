@@ -29,7 +29,6 @@ function SettingsForm() {
     confirmPassword: ""
   });
 
-  // Fetch real profile from backend
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
@@ -124,7 +123,6 @@ function SettingsForm() {
           { headers }
         );
 
-        // Update stored user in localStorage so DashboardHeader immediately updates
         if (res.data?.therapist) {
           const currentUser = authService.getUser() || {};
           const updatedUser = {
@@ -147,7 +145,6 @@ function SettingsForm() {
     }
   };
 
-  // Avatar initials
   const initials = profile.name
     ? profile.name
         .replace(/^Dr\.\s*/i, "")
@@ -168,7 +165,7 @@ function SettingsForm() {
 
   return (
     <div className="settings-layout">
-      {/* Settings Navigation Menu */}
+      {}
       <aside className="settings-menu">
         {["Profile", "Practice", "Notifications", "Security"].map((tab) => (
           <button
@@ -186,7 +183,7 @@ function SettingsForm() {
         ))}
       </aside>
 
-      {/* Main Settings Card */}
+      {}
       <section className="settings-card">
         <div className="settings-card-header">
           <div>
@@ -222,7 +219,7 @@ function SettingsForm() {
         )}
 
         <form onSubmit={handleSubmit}>
-          {/* TAB 1: PROFILE */}
+          {}
           {activeTab === "Profile" && (
             <div className="settings-form-grid">
               <div className="settings-field">
@@ -302,7 +299,7 @@ function SettingsForm() {
             </div>
           )}
 
-          {/* TAB 2: PRACTICE */}
+          {}
           {activeTab === "Practice" && (
             <div className="settings-form-grid">
               <div className="settings-field full-width">
@@ -341,7 +338,7 @@ function SettingsForm() {
             </div>
           )}
 
-          {/* TAB 3: NOTIFICATIONS */}
+          {}
           {activeTab === "Notifications" && (
             <div>
               <div className="settings-toggle-item">
@@ -380,7 +377,7 @@ function SettingsForm() {
             </div>
           )}
 
-          {/* TAB 4: SECURITY */}
+          {}
           {activeTab === "Security" && (
             <div className="settings-form-grid">
               <div className="settings-field full-width">

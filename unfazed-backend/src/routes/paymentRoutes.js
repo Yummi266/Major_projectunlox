@@ -11,7 +11,6 @@ const {
 
 const router = express.Router();
 
-// Information overview on /api/payments
 router.get("/", (req, res) => {
   res.status(200).json({
     success: true,
@@ -45,7 +44,6 @@ router.get("/", (req, res) => {
   });
 });
 
-// Friendly helper if user tests create-order via GET in browser
 router.get("/create-order", (req, res) => {
   res.status(405).json({
     success: false,
@@ -63,7 +61,6 @@ router.get("/create-order", (req, res) => {
   });
 });
 
-// Create Razorpay payment order
 router.post(
   "/create-order",
   protect,
@@ -71,7 +68,6 @@ router.post(
   createOrder
 );
 
-// Verify Razorpay payment signature
 router.post(
   "/verify",
   protect,
@@ -79,7 +75,6 @@ router.post(
   verifyPayment
 );
 
-// Client payment transaction history
 router.get(
   "/my-history",
   protect,

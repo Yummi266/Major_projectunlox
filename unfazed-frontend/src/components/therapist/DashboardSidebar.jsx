@@ -108,18 +108,7 @@ function DashboardSidebar() {
         </Link>
       </nav>
 
-      {/* Switcher & Sign Out */}
       <div style={{ paddingTop: "16px", borderTop: "1px solid #c0d8e8", display: "flex", flexDirection: "column", gap: "6px" }}>
-        <Link
-          to="/client/dashboard"
-          className="nav-item"
-          title="Switch to Client View"
-          style={{ fontSize: "12.5px", background: "rgba(21, 80, 120, 0.08)" }}
-        >
-          <span className="nav-item-icon">⇄</span>
-          <span>Client View</span>
-        </Link>
-
         <button
           type="button"
           onClick={handleLogout}

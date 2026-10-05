@@ -75,17 +75,8 @@ function ClientSidebar() {
         </Link>
       </nav>
 
-      {/* Portal Switcher & Logout at sidebar bottom */}
+      { }
       <div style={{ paddingTop: "16px", borderTop: "1px solid #c0d8e8", display: "flex", flexDirection: "column", gap: "6px" }}>
-        <Link
-          to="/dashboard"
-          className="nav-item"
-          title="Switch to Therapist Workspace"
-          style={{ fontSize: "12.5px", background: "rgba(21, 80, 120, 0.08)" }}
-        >
-          <span className="nav-item-icon">⇄</span>
-          <span>Therapist View</span>
-        </Link>
 
         <button
           type="button"

@@ -13,7 +13,6 @@ function ScheduleList({ refreshKey }) {
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
 
-  // Fetch real appointments from MongoDB
   useEffect(() => {
     const fetchSessions = async () => {
       setLoading(true);
@@ -60,7 +59,6 @@ function ScheduleList({ refreshKey }) {
     fetchSessions();
   }, [refreshKey]);
 
-  // Toggle session completion
   const handleToggleComplete = async (id, currentStatus) => {
     try {
       setUpdatingId(id);
@@ -88,7 +86,6 @@ function ScheduleList({ refreshKey }) {
     }
   };
 
-  // Delete appointment
   const handleDeleteSession = async (id, clientName) => {
     const confirmed = window.confirm(
       `Are you sure you want to cancel and remove the session with ${clientName}?`
@@ -125,13 +122,13 @@ function ScheduleList({ refreshKey }) {
         session.isCompleted ? "completed-row" : "active-row"
       }`}
     >
-      {/* 1. Time Column */}
+      {}
       <div className="schedule-row-time">
         <strong>{session.startTime}</strong>
         <span className="time-end">{session.endTime}</span>
       </div>
 
-      {/* 2. Client & Session Details with Avatar and Medium Pill */}
+      {}
       <div className="schedule-row-client">
         <div className="client-avatar-badge-wrap">
           <div className={`client-initials-avatar ${session.mediumClass}`}>
@@ -166,7 +163,7 @@ function ScheduleList({ refreshKey }) {
         </div>
       </div>
 
-      {/* 3. Action Buttons */}
+      {}
       <div className="schedule-row-actions">
         {session.isCompleted ? (
           <button
@@ -213,7 +210,7 @@ function ScheduleList({ refreshKey }) {
 
   return (
     <section className="schedule-card schedule-main-card">
-      {/* Card Header with Filter Pills */}
+      {}
       <div className="schedule-date-header">
         <div className="schedule-title-area">
           <h2>Clinical Schedule</h2>
@@ -222,7 +219,7 @@ function ScheduleList({ refreshKey }) {
           </span>
         </div>
 
-        {/* Filter Row */}
+        {}
         <div className="schedule-filter-tabs">
           <button
             type="button"
@@ -257,7 +254,7 @@ function ScheduleList({ refreshKey }) {
         </div>
       </div>
 
-      {/* Full Session List */}
+      {}
       <div className="schedule-sessions-container">
         {loading ? (
           <div className="schedule-empty-state">
@@ -265,7 +262,7 @@ function ScheduleList({ refreshKey }) {
           </div>
         ) : (
           <>
-            {/* Upcoming / Next Up Group */}
+            {}
             {upcomingSessions.length > 0 && (
               <div className="schedule-group">
                 <div className="schedule-group-header">
@@ -277,7 +274,7 @@ function ScheduleList({ refreshKey }) {
               </div>
             )}
 
-            {/* Completed Group */}
+            {}
             {completedSessions.length > 0 && (
               <div className="schedule-group completed-group">
                 <div className="schedule-group-header">

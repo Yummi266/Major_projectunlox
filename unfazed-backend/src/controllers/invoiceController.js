@@ -12,7 +12,6 @@ const generateInvoiceNumber = async () => {
   return `INV-${year}-${nextNumber}`;
 };
 
-// GET /api/invoices
 const getInvoices = async (req, res, next) => {
   try {
     let invoices;
@@ -48,7 +47,6 @@ const getInvoices = async (req, res, next) => {
   }
 };
 
-// GET /api/invoices/:id
 const getInvoiceById = async (req, res, next) => {
   try {
     const invoice = await Invoice.findById(req.params.id)
@@ -64,7 +62,6 @@ const getInvoiceById = async (req, res, next) => {
       });
     }
 
-    // Make sure the invoice belongs to the logged-in user
     if (
       req.role === "client" &&
       invoice.client._id.toString() !== req.user._id.toString()

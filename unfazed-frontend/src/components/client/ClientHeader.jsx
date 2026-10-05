@@ -1,4 +1,5 @@
-import { SearchIcon, MailIcon, BellIcon, UserIcon } from "../common/Icons";
+import { SearchIcon, UserIcon } from "../common/Icons";
+import NotificationDropdown from "../common/NotificationDropdown";
 import { authService } from "../../services/authService";
 
 function ClientHeader() {
@@ -31,15 +32,7 @@ function ClientHeader() {
           />
         </div>
 
-        <button className="header-button header-icon-btn" type="button" aria-label="Mail messages" title="2 unread messages">
-          <MailIcon size={17} />
-          <span className="btn-badge-number">2</span>
-        </button>
-
-        <button className="header-button header-icon-btn" type="button" aria-label="Notifications" title="3 new notifications">
-          <BellIcon size={17} />
-          <span className="btn-badge-number">3</span>
-        </button>
+        <NotificationDropdown />
 
         <div className="doctor-profile-wrap">
           <span className="doctor-name">

@@ -29,7 +29,6 @@ function RevenueOverview() {
   const revenues = trend.map((t) => t.revenue || 0);
   const maxRev = Math.max(...revenues, 15000);
 
-  // Dynamic Y-axis ticks
   const yAxisTicks = [
     `₹${Math.round(maxRev / 1000)}k`,
     `₹${Math.round((maxRev * 0.66) / 1000)}k`,
@@ -37,7 +36,6 @@ function RevenueOverview() {
     "₹0"
   ];
 
-  // Calculate SVG polyline points (width: 500, height: 180, usable height: 130)
   const chartWidth = 500;
   const chartHeight = 180;
   const bottomY = 150;

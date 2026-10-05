@@ -9,7 +9,7 @@ function SessionList({ upcoming = [], completed = [], loading = false }) {
 
   return (
     <div className="sessions-wrapper">
-      {/* Upcoming Sessions Card */}
+      {}
       <section className="sessions-card">
         <div className="sessions-card-header">
           <div>
@@ -61,7 +61,7 @@ function SessionList({ upcoming = [], completed = [], loading = false }) {
         )}
       </section>
 
-      {/* Completed Sessions Card */}
+      {}
       <section className="sessions-card">
         <div className="sessions-card-header">
           <div>

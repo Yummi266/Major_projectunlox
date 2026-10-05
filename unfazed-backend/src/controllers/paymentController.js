@@ -6,10 +6,8 @@ const ClientPackage = require("../models/ClientPackage");
 const Client = require("../models/Client");
 const Invoice = require("../models/Invoice");
 const { generateInvoiceNumber } = require("./invoiceController");
+const { createNotification } = require("../services/notificationService");
 
-// =====================================================
-// CREATE RAZORPAY ORDER
-// =====================================================
 const createOrder = async (req, res, next) => {
   try {
     if (req.role !== "client") {
@@ -35,7 +33,6 @@ const createOrder = async (req, res, next) => {
       });
     }
 
-    // Find active package
     const selectedPackage = await Package.findOne({
       _id: packageId,
       status: "Active",
@@ -48,7 +45,6 @@ const createOrder = async (req, res, next) => {
       });
     }
 
-    // Make sure the package belongs to the client's therapist if restricted
     if (
       client.therapist &&
       selectedPackage.therapist &&
@@ -100,9 +96,6 @@ const createOrder = async (req, res, next) => {
   }
 };
 
-// =====================================================
-// VERIFY PAYMENT
-// =====================================================
 const verifyPayment = async (req, res, next) => {
   try {
     if (req.role !== "client") {
@@ -141,7 +134,6 @@ const verifyPayment = async (req, res, next) => {
       });
     }
 
-    // Prevent duplicate processing
     if (payment.status === "Paid") {
       return res.status(200).json({
         success: true,
@@ -194,7 +186,6 @@ const verifyPayment = async (req, res, next) => {
     payment.clientPackage = clientPackage._id;
     await payment.save();
 
-    // Automatically update active package on client document
     const client = await Client.findById(payment.client);
     if (client) {
       client.package = selectedPackage.name;
@@ -203,9 +194,6 @@ const verifyPayment = async (req, res, next) => {
       await client.save();
     }
 
-    // =================================================
-    // CREATE INVOICE
-    // =================================================
     const invoiceNumber = await generateInvoiceNumber();
     const invoice = await Invoice.create({
       invoiceNumber,
@@ -221,6 +209,35 @@ const verifyPayment = async (req, res, next) => {
       issuedAt: new Date(),
     });
 
+    createNotification({
+      recipient: payment.client,
+      recipientRole: "client",
+      type: "payment",
+      title: "Payment Received",
+      message: `Your payment of ₹${payment.amount} for ${selectedPackage.name} was successful. Invoice #${invoice.invoiceNumber} is now available.`,
+      relatedId: invoice._id,
+    });
+
+    createNotification({
+      recipient: payment.client,
+      recipientRole: "client",
+      type: "package",
+      title: "Care Package Activated",
+      message: `${selectedPackage.name} (${selectedPackage.sessions} sessions) is now active on your account.`,
+      relatedId: clientPackage._id,
+    });
+
+    if (payment.therapist) {
+      createNotification({
+        recipient: payment.therapist,
+        recipientRole: "therapist",
+        type: "payment",
+        title: "Package Purchased",
+        message: `${client ? client.name : "A client"} purchased ${selectedPackage.name} (₹${payment.amount}).`,
+        relatedId: payment._id,
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: "Payment verified, package activated, and invoice generated successfully",
@@ -233,9 +250,6 @@ const verifyPayment = async (req, res, next) => {
   }
 };
 
-// =====================================================
-// GET CLIENT PAYMENTS HISTORY
-// =====================================================
 const getMyPayments = async (req, res, next) => {
   try {
     if (req.role !== "client") {

@@ -24,7 +24,6 @@ function MessageContacts({ selectedClientId, onSelectClient, refreshKey }) {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch real client conversations from MongoDB
   useEffect(() => {
     const fetchConversations = async () => {
       try {
@@ -34,7 +33,6 @@ function MessageContacts({ selectedClientId, onSelectClient, refreshKey }) {
         if (res.data?.conversations && Array.isArray(res.data.conversations)) {
           setContacts(res.data.conversations);
 
-          // Default to the first client if none selected
           if (!selectedClientId && res.data.conversations.length > 0) {
             onSelectClient(res.data.conversations[0].clientId);
           }

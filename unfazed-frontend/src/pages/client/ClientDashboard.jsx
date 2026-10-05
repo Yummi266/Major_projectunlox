@@ -59,7 +59,7 @@ function ClientDashboard() {
         <ClientHeader />
 
         <main className="dashboard-content">
-          {/* TOP: 4 KPI CARDS POWERED BY REAL DATA */}
+          {}
           <section className="kpi-row">
             <StatCard
               title="Sessions Completed"
@@ -90,7 +90,7 @@ function ClientDashboard() {
             />
           </section>
 
-          {/* ROW 2: Real Upcoming Session & Daily Mood Check-In */}
+          {}
           <section className="dashboard-row">
             <UpcomingSession
               session={data?.upcomingSession}
@@ -99,13 +99,13 @@ function ClientDashboard() {
             <FeelingCheckIn />
           </section>
 
-          {/* ROW 3: Real Package Progress & Therapist Guidance */}
+          {}
           <section className="dashboard-row">
             <PackageProgress progress={data?.packageProgress} />
             <TherapistMessage message={data?.therapistMessage} />
           </section>
 
-          {/* ROW 4: Real Care Activity & Billing History */}
+          {}
           <section className="activity-row">
             <ClientActivity activities={data?.recentActivities} />
           </section>

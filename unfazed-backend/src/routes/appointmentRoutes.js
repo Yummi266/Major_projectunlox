@@ -2,12 +2,11 @@ const express = require("express");
 const Appointment = require("../models/Appointment");
 const Client = require("../models/Client");
 const Therapist = require("../models/Therapist");
+const { createNotification } = require("../services/notificationService");
 const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// @desc    Get all appointments for the authenticated therapist
-// @route   GET /api/appointments
 router.get("/", protect, authorize("therapist"), async (req, res) => {
   try {
     const { type, status } = req.query;
@@ -43,8 +42,6 @@ router.get("/", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// @desc    Get today's appointments for authenticated therapist dashboard
-// @route   GET /api/appointments/today
 router.get("/today", protect, authorize("therapist"), async (req, res) => {
   try {
     const therapistId = req.user._id;
@@ -82,8 +79,6 @@ router.get("/today", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// @desc    Create new appointment (strictly isolated to authenticated therapist)
-// @route   POST /api/appointments
 router.post("/", protect, authorize("therapist"), async (req, res) => {
   try {
     const {
@@ -133,6 +128,17 @@ router.post("/", protect, authorize("therapist"), async (req, res) => {
       notes: notes ? notes.trim() : ""
     });
 
+    if (finalClientId) {
+      createNotification({
+        recipient: finalClientId,
+        recipientRole: "client",
+        type: "appointment",
+        title: "New Session Scheduled",
+        message: `A new ${appointment.type} session has been scheduled for you on ${new Date(appointment.date).toLocaleDateString()} at ${appointment.startTime}.`,
+        relatedId: appointment._id
+      });
+    }
+
     res.status(201).json({
       message: "Appointment scheduled successfully",
       appointment
@@ -145,8 +151,6 @@ router.post("/", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// @desc    Update appointment strictly for owning therapist
-// @route   PUT /api/appointments/:id
 router.put("/:id", protect, authorize("therapist"), async (req, res) => {
   try {
     const { type, topic, date, startTime, endTime, isCompleted, status, notes } = req.body;
@@ -189,8 +193,6 @@ router.put("/:id", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// @desc    Delete appointment strictly for owning therapist
-// @route   DELETE /api/appointments/:id
 router.delete("/:id", protect, authorize("therapist"), async (req, res) => {
   try {
     const therapistId = req.user._id;
@@ -215,8 +217,6 @@ router.delete("/:id", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// @desc    Get client sessions (Upcoming and Completed) strictly for authenticated client
-// @route   GET /api/appointments/client-sessions
 router.get("/client-sessions", protect, authorize("client"), async (req, res) => {
   try {
     const client = req.user;
@@ -300,8 +300,6 @@ router.get("/client-sessions", protect, authorize("client"), async (req, res) =>
   }
 });
 
-// @desc    Client self-booking appointment with chosen/assigned therapist
-// @route   POST /api/appointments/client-book
 router.post("/client-book", protect, authorize("client"), async (req, res) => {
   try {
     const client = req.user;
@@ -326,7 +324,6 @@ router.post("/client-book", protect, authorize("client"), async (req, res) => {
       });
     }
 
-    // Automatically bind/update client's chosen therapist
     if (!client.therapist || client.therapist.toString() !== chosenTherapist._id.toString()) {
       client.therapist = chosenTherapist._id;
       await client.save();
@@ -343,6 +340,24 @@ router.post("/client-book", protect, authorize("client"), async (req, res) => {
       endTime: endTime || "10:50 AM",
       isCompleted: false,
       status: "Upcoming"
+    });
+
+    createNotification({
+      recipient: chosenTherapist._id,
+      recipientRole: "therapist",
+      type: "appointment",
+      title: "New Appointment Booked",
+      message: `${client.name} booked a ${newAppointment.type} session on ${new Date(date).toLocaleDateString()} at ${newAppointment.startTime}.`,
+      relatedId: newAppointment._id
+    });
+
+    createNotification({
+      recipient: client._id,
+      recipientRole: "client",
+      type: "appointment",
+      title: "Appointment Confirmed",
+      message: `Your ${newAppointment.type} session with ${chosenTherapist.name} is confirmed for ${new Date(date).toLocaleDateString()} at ${newAppointment.startTime}.`,
+      relatedId: newAppointment._id
     });
 
     res.status(201).json({

@@ -19,7 +19,6 @@ function MessageWindow({ selectedClientId, onMessageSent }) {
 
   const conversationContainerRef = useRef(null);
 
-  // Directly scroll the internal conversation container without touching the window/page
   const scrollToBottom = (behavior = "auto") => {
     if (conversationContainerRef.current) {
       conversationContainerRef.current.scrollTo({
@@ -29,7 +28,6 @@ function MessageWindow({ selectedClientId, onMessageSent }) {
     }
   };
 
-  // Fetch real messages for the selected client
   useEffect(() => {
     if (!selectedClientId) return;
 
@@ -43,7 +41,6 @@ function MessageWindow({ selectedClientId, onMessageSent }) {
           setMessages(res.data.messages || []);
           setClient(res.data.client || null);
 
-          // Instant scroll inside conversation only — prevents entire page jumping
           requestAnimationFrame(() => {
             scrollToBottom("auto");
           });
@@ -60,7 +57,6 @@ function MessageWindow({ selectedClientId, onMessageSent }) {
     };
   }, [selectedClientId]);
 
-  // Send a real message
   const handleSend = async (e) => {
     e.preventDefault();
     if (!inputText.trim() || !selectedClientId || sending) return;
@@ -79,7 +75,6 @@ function MessageWindow({ selectedClientId, onMessageSent }) {
       if (res.data?.data) {
         setMessages((prev) => [...prev, res.data.data]);
 
-        // Smooth scroll for new sent message
         setTimeout(() => {
           scrollToBottom("smooth");
         }, 50);
@@ -117,7 +112,7 @@ function MessageWindow({ selectedClientId, onMessageSent }) {
 
   return (
     <section className="message-window">
-      {/* Header */}
+      {}
       <header className="message-window-header">
         <div className="message-client-info">
           <div className="message-avatar">{initials}</div>
@@ -129,7 +124,7 @@ function MessageWindow({ selectedClientId, onMessageSent }) {
         </div>
       </header>
 
-      {/* Conversation Thread */}
+      {}
       <div className="conversation" ref={conversationContainerRef}>
         <div className="conversation-date">Today</div>
 
@@ -158,7 +153,7 @@ function MessageWindow({ selectedClientId, onMessageSent }) {
         )}
       </div>
 
-      {/* Composer */}
+      {}
       <form className="message-composer" onSubmit={handleSend}>
         <input
           type="text"

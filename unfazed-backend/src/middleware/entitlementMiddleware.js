@@ -1,9 +1,6 @@
 const Client = require("../models/Client");
 const ClientPackage = require("../models/ClientPackage");
 
-/**
- * Check if the client has available sessions in their package
- */
 const checkSessionQuota = async (req, res, next) => {
   try {
     if (req.role !== "client") {
@@ -15,7 +12,6 @@ const checkSessionQuota = async (req, res, next) => {
       return res.status(404).json({ success: false, message: "Client not found" });
     }
 
-    // If client has tracked sessions, check quota
     if (client.totalSessions > 0 && client.sessionsUsed >= client.totalSessions) {
       return res.status(403).json({
         success: false,

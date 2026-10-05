@@ -41,7 +41,7 @@ function Dashboard() {
         <DashboardHeader />
 
         <main className="dashboard-content">
-          {/* TOP: 4 KPI CARDS POWERED BY REAL DATA */}
+          {}
           <section className="kpi-row">
             <StatCard
               title="Revenue"
@@ -72,19 +72,19 @@ function Dashboard() {
             />
           </section>
 
-          {/* ROW 2 */}
+          {}
           <section className="dashboard-row">
             <RevenueOverview />
             <AttentionCard />
           </section>
 
-          {/* ROW 3 */}
+          {}
           <section className="dashboard-row">
             <TodaySchedule />
             <ClientPackages />
           </section>
 
-          {/* ROW 4 - FULL WIDTH */}
+          {}
           <section className="activity-row">
             <RecentActivity />
           </section>

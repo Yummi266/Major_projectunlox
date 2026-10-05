@@ -12,6 +12,7 @@ const packageRoutes = require("./routes/packageRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const invoiceRoutes = require("./routes/invoiceRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
       analytics: "/api/analytics",
       payments: "/api/payments",
       invoices: "/api/invoices",
+      notifications: "/api/notifications",
       auth: {
         registerTherapist: "POST /api/auth/therapist/register",
         registerClient: "POST /api/auth/client/register",
@@ -58,8 +60,8 @@ app.use("/api/packages", packageRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/invoices", invoiceRoutes);
+app.use("/api/notifications", notificationRoutes);
 
-// Global Error Handler
 app.use(errorHandler);
 
 module.exports = app;

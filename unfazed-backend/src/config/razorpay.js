@@ -23,7 +23,6 @@ const getRazorpay = () => {
   return instance;
 };
 
-// Lazy-loaded proxy so server doesn't crash on startup if credentials aren't yet in .env
 const razorpay = new Proxy(
   {},
   {

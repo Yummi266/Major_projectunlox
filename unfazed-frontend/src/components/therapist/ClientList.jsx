@@ -9,7 +9,6 @@ function ClientList({ refreshKey }) {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
 
-  // Fetch real registered clients exclusively from MongoDB backend
   useEffect(() => {
     const fetchClients = async () => {
       setLoading(true);
@@ -52,7 +51,6 @@ function ClientList({ refreshKey }) {
     fetchClients();
   }, [refreshKey]);
 
-  // Handle client deletion
   const handleDeleteClient = async (id, name) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete client "${name}"? This action cannot be undone.`
@@ -93,7 +91,7 @@ function ClientList({ refreshKey }) {
         </div>
 
         <div className="clients-header-actions">
-          {/* Status Filter Tabs */}
+          {}
           <div className="clients-status-tabs">
             <button
               type="button"
@@ -118,7 +116,7 @@ function ClientList({ refreshKey }) {
             </button>
           </div>
 
-          {/* Search Box */}
+          {}
           <div className="clients-search">
             <SearchIcon size={14} className="search-icon" />
             <input
@@ -162,7 +160,7 @@ function ClientList({ refreshKey }) {
 
               return (
                 <div className="client-table-row" key={client._id}>
-                  {/* 1. Client Profile with Avatar */}
+                  {}
                   <div className="client-profile">
                     <div className="client-avatar-small">{initials}</div>
 
@@ -172,12 +170,12 @@ function ClientList({ refreshKey }) {
                     </div>
                   </div>
 
-                  {/* 2. Package */}
+                  {}
                   <div className="client-package">
                     <span>{client.package}</span>
                   </div>
 
-                  {/* 3. Progress */}
+                  {}
                   <div className="client-progress-col">
                     <div className="progress-label-row">
                       <strong>{client.sessions}</strong>
@@ -191,7 +189,7 @@ function ClientList({ refreshKey }) {
                     </div>
                   </div>
 
-                  {/* 4. Status Badge */}
+                  {}
                   <div className="client-status-col">
                     <span
                       className={`client-status-badge ${
@@ -207,7 +205,7 @@ function ClientList({ refreshKey }) {
                     </span>
                   </div>
 
-                  {/* 5. Actions: View Profile & Delete Client */}
+                  {}
                   <div className="client-action-col text-right">
                     <button className="client-view-btn" type="button">
                       View

@@ -9,7 +9,6 @@ const Message = require("../models/Message");
 
 const router = express.Router();
 
-// Real therapist dashboard overview stats - isolated per authenticated therapist
 router.get("/overview", protect, authorize("therapist"), async (req, res) => {
   try {
     const therapistId = req.user._id;
@@ -27,13 +26,11 @@ router.get("/overview", protect, authorize("therapist"), async (req, res) => {
     const clientsCount = clients.length;
     const activeClientsCount = clients.filter((c) => c.isActive !== false).length;
 
-    // Build package price map
     const packageMap = {};
     packages.forEach((p) => {
       packageMap[p.name.toLowerCase().trim()] = Number(p.price) || 0;
     });
 
-    // Calculate real revenue strictly from this therapist's clients & appointments
     let totalRevenue = 0;
     let totalSessionsUsed = 0;
 
@@ -61,7 +58,6 @@ router.get("/overview", protect, authorize("therapist"), async (req, res) => {
         ? ((cancelledAppts.length / appointments.length) * 100).toFixed(1)
         : "0.0";
 
-    // Today's appointments count for this therapist
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date();
@@ -73,7 +69,6 @@ router.get("/overview", protect, authorize("therapist"), async (req, res) => {
       return d >= startOfDay && d <= endOfDay;
     }).length;
 
-    // Recent activities built from this therapist's notes and clients
     const recentNotes = await Note.find(noteFilter).sort({ createdAt: -1 }).limit(4);
     const recentClients = await Client.find(clientFilter).sort({ createdAt: -1 }).limit(4);
 
@@ -97,12 +92,10 @@ router.get("/overview", protect, authorize("therapist"), async (req, res) => {
 
     activities.sort((a, b) => new Date(b.time) - new Date(a.time));
 
-    // Clients needing attention for this therapist
     const endingSoonClients = clients.filter(
       (c) => (c.totalSessions || 6) - (c.sessionsUsed || 0) <= 1
     );
 
-    // 6-Month Real Revenue Trend for this therapist
     const now = new Date();
     const monthlyTrend = [];
     for (let i = 5; i >= 0; i--) {
@@ -160,7 +153,6 @@ router.get("/overview", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// Authorized therapist dashboard route
 router.get("/therapist", protect, authorize("therapist"), async (req, res) => {
   try {
     res.status(200).json({
@@ -172,12 +164,10 @@ router.get("/therapist", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// Client dashboard data isolated strictly to the authenticated client
 router.get("/client", protect, authorize("client"), async (req, res) => {
   try {
     const client = req.user;
 
-    // Get assigned therapist for this specific client
     let therapist = client.therapist;
     if (!therapist || !therapist.name) {
       const tId = client.therapist?._id || client.therapist;
@@ -192,7 +182,6 @@ router.get("/client", protect, authorize("client"), async (req, res) => {
         : `Dr. ${therapist.name}`
       : "Care Provider";
 
-    // Appointments strictly for this specific client
     const appointments = await Appointment.find({ client: client._id }).sort({ date: 1, startTime: 1 });
 
     const upcomingAppts = appointments.filter(
@@ -202,19 +191,16 @@ router.get("/client", protect, authorize("client"), async (req, res) => {
 
     const nextSession = upcomingAppts.length > 0 ? upcomingAppts[0] : null;
 
-    // Package progress calculation for this specific client
     const used = typeof client.sessionsUsed === "number" ? client.sessionsUsed : completedAppts.length;
     const total = typeof client.totalSessions === "number" && client.totalSessions > 0 ? client.totalSessions : 6;
     const remaining = Math.max(0, total - used);
     const percentage = Math.min(100, Math.round((used / total) * 100));
 
-    // Latest message from assigned therapist to this client
     const latestTherapistMsg = await Message.findOne({
       client: client._id,
       sender: "therapist"
     }).sort({ createdAt: -1 });
 
-    // Recent care activities for this client
     const activities = [];
     completedAppts.slice(-2).reverse().forEach((a) => {
       activities.push({

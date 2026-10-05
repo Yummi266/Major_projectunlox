@@ -52,7 +52,6 @@ const noteSchema = new mongoose.Schema(
   }
 );
 
-// Auto-generate preview from content before saving if not explicitly set
 noteSchema.pre("save", function () {
   if (!this.preview && this.content) {
     this.preview =

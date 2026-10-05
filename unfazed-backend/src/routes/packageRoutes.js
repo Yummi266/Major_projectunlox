@@ -52,7 +52,6 @@ const DEFAULT_PACKAGES = [
   }
 ];
 
-// Helper to seed packages if database is empty
 async function ensureSeedPackages() {
   const count = await Package.countDocuments();
   if (count === 0) {
@@ -60,8 +59,6 @@ async function ensureSeedPackages() {
   }
 }
 
-// @desc    Get all packages with live client counts (scoped to authenticated therapist)
-// @route   GET /api/packages
 router.get("/", optionalProtect, async (req, res) => {
   try {
     await ensureSeedPackages();
@@ -69,14 +66,12 @@ router.get("/", optionalProtect, async (req, res) => {
     const packages = await Package.find().sort({ price: 1 });
     let clients = [];
 
-    // Only count enrolled clients if authenticated as therapist
     if (req.user && req.role === "therapist") {
       clients = await Client.find({ therapist: req.user._id }).select(
         "name email package sessionsUsed totalSessions isActive"
       );
     }
 
-    // Augment packages with live enrolled clients
     const enrichedPackages = packages.map((pkg) => {
       const pkgObj = pkg.toObject();
       const enrolled = clients.filter((c) => {
@@ -111,8 +106,6 @@ router.get("/", optionalProtect, async (req, res) => {
   }
 });
 
-// @desc    Get single package by ID
-// @route   GET /api/packages/:id
 router.get("/:id", optionalProtect, async (req, res) => {
   try {
     const pkg = await Package.findById(req.params.id);
@@ -140,8 +133,6 @@ router.get("/:id", optionalProtect, async (req, res) => {
   }
 });
 
-// @desc    Create new package
-// @route   POST /api/packages
 router.post("/", protect, authorize("therapist"), async (req, res) => {
   try {
     const { name, sessions, duration, price, currency, status, description, features } = req.body;
@@ -178,8 +169,6 @@ router.post("/", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// @desc    Update package
-// @route   PUT /api/packages/:id
 router.put("/:id", protect, authorize("therapist"), async (req, res) => {
   try {
     const { name, sessions, duration, price, currency, status, description, features } = req.body;
@@ -189,14 +178,12 @@ router.put("/:id", protect, authorize("therapist"), async (req, res) => {
       return res.status(404).json({ message: "Package not found" });
     }
 
-    // If name is changing, check if another package already uses it
     if (name && name.trim().toLowerCase() !== existingPackage.name.toLowerCase()) {
       const duplicate = await Package.findOne({ name: name.trim() });
       if (duplicate) {
         return res.status(409).json({ message: "Another package with this name already exists" });
       }
 
-      // Update clients who were assigned old package name
       await Client.updateMany(
         { package: existingPackage.name },
         { package: name.trim() }
@@ -230,8 +217,6 @@ router.put("/:id", protect, authorize("therapist"), async (req, res) => {
   }
 });
 
-// @desc    Delete package
-// @route   DELETE /api/packages/:id
 router.delete("/:id", protect, authorize("therapist"), async (req, res) => {
   try {
     const pkg = await Package.findById(req.params.id);
@@ -239,7 +224,6 @@ router.delete("/:id", protect, authorize("therapist"), async (req, res) => {
       return res.status(404).json({ message: "Package not found" });
     }
 
-    // Check if clients are currently using this package
     const enrolledClientsCount = await Client.countDocuments({
       package: { $regex: new RegExp("^" + pkg.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") }
     });

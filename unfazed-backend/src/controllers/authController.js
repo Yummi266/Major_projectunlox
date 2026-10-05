@@ -12,8 +12,6 @@ const generateToken = (id, role) => {
     );
 };
 
-// @desc    Register a new Therapist
-// @route   POST /api/auth/therapist/register
 const registerTherapist = async (req, res) => {
     try {
         const {
@@ -74,8 +72,6 @@ const registerTherapist = async (req, res) => {
     }
 };
 
-// @desc    Register a new Client
-// @route   POST /api/auth/client/register
 const registerClient = async (req, res) => {
     try {
         const { name, email, password, phone, therapist } = req.body;
@@ -140,8 +136,6 @@ const registerClient = async (req, res) => {
     }
 };
 
-// @desc    Login (handles therapist or client based on role or email lookup)
-// @route   POST /api/auth/login
 const login = async (req, res) => {
     try {
         const { email, password, role } = req.body;
@@ -218,22 +212,16 @@ const login = async (req, res) => {
     }
 };
 
-// @desc    Therapist specific login
-// @route   POST /api/auth/therapist/login
 const loginTherapist = async (req, res) => {
     req.body.role = "therapist";
     return login(req, res);
 };
 
-// @desc    Client specific login
-// @route   POST /api/auth/client/login
 const loginClient = async (req, res) => {
     req.body.role = "client";
     return login(req, res);
 };
 
-// @desc    Get currently authenticated user
-// @route   GET /api/auth/me
 const getMe = async (req, res) => {
     try {
         res.status(200).json({

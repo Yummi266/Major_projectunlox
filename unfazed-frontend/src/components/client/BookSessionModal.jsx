@@ -21,7 +21,6 @@ function BookSessionModal({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  // Fetch all available therapists so the user can choose who to take
   useEffect(() => {
     if (!isOpen) return;
 
@@ -33,7 +32,6 @@ function BookSessionModal({
         if (isMounted && res.data?.therapists && Array.isArray(res.data.therapists)) {
           setTherapists(res.data.therapists);
 
-          // If current selection is empty or not in list, pick currentTherapistId or the first therapist
           if (res.data.therapists.length > 0) {
             const hasCurrent = res.data.therapists.some((t) => t._id === currentTherapistId);
             if (hasCurrent) {
@@ -59,7 +57,6 @@ function BookSessionModal({
 
   if (!isOpen) return null;
 
-  // Find currently selected therapist object for rich preview
   const activeTherapist = therapists.find((t) => t._id === selectedTherapistId) || {
     name: therapistName || "Assigned Therapist",
     specialization: therapistSpecialization || "Clinical Care",
@@ -99,7 +96,6 @@ function BookSessionModal({
       const token = authService.getToken();
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-      // Calculate end time (50 min later)
       const endTimeMap = {
         "10:00 AM": "10:50 AM",
         "11:00 AM": "11:50 AM",
@@ -131,7 +127,6 @@ function BookSessionModal({
     }
   };
 
-  // Min date: tomorrow
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDateStr = tomorrow.toISOString().split("T")[0];
@@ -164,7 +159,7 @@ function BookSessionModal({
               </div>
             )}
 
-            {/* Choose Therapist */}
+            {}
             <div className="book-form-group">
               <label htmlFor="therapist-select">Choose Therapist *</label>
               {loadingTherapists ? (
@@ -193,7 +188,7 @@ function BookSessionModal({
                 />
               )}
 
-              {/* Therapist Quick Info Card */}
+              {}
               {activeTherapist && (
                 <div className="therapist-preview-card">
                   <div className="therapist-preview-left">

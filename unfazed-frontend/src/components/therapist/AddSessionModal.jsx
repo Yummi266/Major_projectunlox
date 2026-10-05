@@ -33,7 +33,6 @@ function AddSessionModal({ onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Load clients from MongoDB
   useEffect(() => {
     const loadClients = async () => {
       try {
@@ -124,7 +123,7 @@ function AddSessionModal({ onClose, onSuccess }) {
 
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="modal-row-grid">
-            {/* Client Selection */}
+            {}
             <div className="modal-field">
               <label htmlFor="session-client-select">Client *</label>
               {clients.length > 0 ? (
@@ -152,7 +151,7 @@ function AddSessionModal({ onClose, onSuccess }) {
               )}
             </div>
 
-            {/* Session Type */}
+            {}
             <div className="modal-field">
               <label htmlFor="session-type-select">Session Medium</label>
               <select
@@ -168,7 +167,7 @@ function AddSessionModal({ onClose, onSuccess }) {
           </div>
 
           <div className="modal-row-grid">
-            {/* Start Time */}
+            {}
             <div className="modal-field">
               <label htmlFor="session-start-time">Start Time</label>
               <input
@@ -180,7 +179,7 @@ function AddSessionModal({ onClose, onSuccess }) {
               />
             </div>
 
-            {/* End Time */}
+            {}
             <div className="modal-field">
               <label htmlFor="session-end-time">End Time</label>
               <input
@@ -194,7 +193,7 @@ function AddSessionModal({ onClose, onSuccess }) {
           </div>
 
           <div className="modal-row-grid">
-            {/* Date */}
+            {}
             <div className="modal-field">
               <label htmlFor="session-date-picker">Date</label>
               <input
@@ -205,7 +204,7 @@ function AddSessionModal({ onClose, onSuccess }) {
               />
             </div>
 
-            {/* Topic */}
+            {}
             <div className="modal-field">
               <label htmlFor="session-topic-input">Consultation Focus</label>
               <input

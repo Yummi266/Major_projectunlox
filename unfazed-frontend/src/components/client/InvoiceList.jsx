@@ -14,10 +14,6 @@ function InvoiceList({
   const [error, setError] = useState("");
   const [selectedInvoice, setSelectedInvoice] = useState(null);
 
-  // =====================================================
-  // FETCH REAL INVOICES
-  // =====================================================
-
   useEffect(() => {
     const fetchInvoices = async () => {
       try {
@@ -60,10 +56,6 @@ function InvoiceList({
     fetchInvoices();
   }, []);
 
-  // =====================================================
-  // FORMAT DATE
-  // =====================================================
-
   const formatDate = (date) => {
     if (!date) return "—";
 
@@ -73,10 +65,6 @@ function InvoiceList({
       year: "numeric",
     });
   };
-
-  // =====================================================
-  // CONVERT BACKEND INVOICE TO UI FORMAT
-  // =====================================================
 
   const formatInvoice = (invoice) => {
     const packageName =
@@ -138,10 +126,6 @@ function InvoiceList({
 
   const list = invoices.map(formatInvoice);
 
-  // =====================================================
-  // TOTAL PAID
-  // =====================================================
-
   const totalPaid = list.reduce(
     (acc, invoice) =>
       invoice.status === "Paid"
@@ -150,17 +134,9 @@ function InvoiceList({
     0
   );
 
-  // =====================================================
-  // PRINT
-  // =====================================================
-
   const handlePrint = () => {
     window.print();
   };
-
-  // =====================================================
-  // LOADING STATE
-  // =====================================================
 
   if (loading) {
     return (
@@ -169,10 +145,6 @@ function InvoiceList({
       </div>
     );
   }
-
-  // =====================================================
-  // ERROR STATE
-  // =====================================================
 
   if (error) {
     return (
@@ -184,9 +156,7 @@ function InvoiceList({
 
   return (
     <div>
-      {/* =================================================
-          BILLING SUMMARY METRICS
-      ================================================= */}
+      {}
 
       <section className="invoices-summary-row">
         <div className="invoice-stat-card">
@@ -236,9 +206,7 @@ function InvoiceList({
         </div>
       </section>
 
-      {/* =================================================
-          INVOICES LIST TABLE
-      ================================================= */}
+      {}
 
       <article className="invoices-table-card">
         <div className="invoices-card-header">
@@ -337,16 +305,14 @@ function InvoiceList({
         </div>
       </article>
 
-      {/* =================================================
-          FORMAL TAX RECEIPT MODAL
-      ================================================= */}
+      {}
 
       {selectedInvoice && (
         <div className="receipt-modal-overlay">
           <div className="receipt-modal">
             <div className="receipt-content">
 
-              {/* Clinic Header */}
+              {}
 
               <div className="receipt-clinic-header">
                 <div className="clinic-brand-block">
@@ -377,7 +343,7 @@ function InvoiceList({
                 </div>
               </div>
 
-              {/* Patient & Invoice Metadata */}
+              {}
 
               <div className="receipt-meta-grid">
                 <div className="receipt-meta-col">
@@ -420,7 +386,7 @@ function InvoiceList({
                 </div>
               </div>
 
-              {/* Itemized Table */}
+              {}
 
               <table className="receipt-items-table">
                 <thead>
@@ -467,7 +433,7 @@ function InvoiceList({
                 </tbody>
               </table>
 
-              {/* Totals */}
+              {}
 
               <div className="receipt-total-block">
                 <div className="receipt-total-line">
@@ -503,7 +469,7 @@ function InvoiceList({
                 </div>
               </div>
 
-              {/* Payment Status */}
+              {}
 
               <div
                 style={{
@@ -531,7 +497,7 @@ function InvoiceList({
               </div>
             </div>
 
-            {/* Modal Footer */}
+            {}
 
             <div className="receipt-modal-footer">
               <button

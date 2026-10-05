@@ -21,13 +21,11 @@ function ClientInvoices() {
         const token = authService.getToken();
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-        // Fetch client dashboard info
         const res = await axios.get("http://localhost:5000/api/dashboard/client", { headers });
         if (res.data) {
           setClientData(res.data);
         }
 
-        // Fetch real invoices from backend
         const invRes = await axios.get("http://localhost:5000/api/invoices", { headers }).catch(() => null);
         if (invRes?.data?.invoices && invRes.data.invoices.length > 0) {
           const mapped = invRes.data.invoices.map((inv) => ({
@@ -57,7 +55,6 @@ function ClientInvoices() {
           }));
           setInvoices(mapped);
         } else if (res.data) {
-          // Fallback if no invoices purchased yet
           const pkgName = res.data.client?.package || "Standard Package";
           const pkgPrice = 1500;
           const pkgSessions = 3;

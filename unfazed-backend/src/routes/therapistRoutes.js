@@ -5,8 +5,6 @@ const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// @desc    Get current therapist profile (used by Settings)
-// @route   GET /api/therapists/profile/current
 router.get("/profile/current", protect, authorize("therapist"), async (req, res) => {
   try {
     res.status(200).json({
@@ -20,8 +18,6 @@ router.get("/profile/current", protect, authorize("therapist"), async (req, res)
   }
 });
 
-// @desc    Update current therapist profile (used by Settings)
-// @route   PUT /api/therapists/profile/current
 router.put("/profile/current", protect, authorize("therapist"), async (req, res) => {
   try {
     const therapist = req.user;
@@ -40,7 +36,6 @@ router.put("/profile/current", protect, authorize("therapist"), async (req, res)
       sessionReminders
     } = req.body;
 
-    // Check email collision if changing email
     if (email && email.toLowerCase().trim() !== therapist.email.toLowerCase()) {
       const existing = await Therapist.findOne({ email: email.toLowerCase().trim() });
       if (existing) {
@@ -89,8 +84,6 @@ router.put("/profile/current", protect, authorize("therapist"), async (req, res)
   }
 });
 
-// @desc    Change therapist password
-// @route   PUT /api/therapists/security/change-password
 router.put("/security/change-password", protect, authorize("therapist"), async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
@@ -120,8 +113,6 @@ router.put("/security/change-password", protect, authorize("therapist"), async (
   }
 });
 
-// @desc    Get all therapists (public for client onboarding selection)
-// @route   GET /api/therapists
 router.get("/", async (req, res) => {
   try {
     const therapists = await Therapist.find().select("-password").sort({ createdAt: -1 });
@@ -137,8 +128,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// @desc    Get therapist by ID (public for viewing credentials)
-// @route   GET /api/therapists/:id
 router.get("/:id", async (req, res) => {
   try {
     const therapist = await Therapist.findById(req.params.id).select("-password");

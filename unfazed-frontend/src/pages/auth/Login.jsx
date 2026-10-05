@@ -39,7 +39,6 @@ function Login() {
         return;
       }
 
-      // Redirect to the appropriate dashboard based on database role
       if (data.user?.role === "client") {
         navigate("/client/dashboard");
       } else {
@@ -168,7 +167,6 @@ function Login() {
 
           <Link to="/forgot-password">Forgot password?</Link>
         </div>
-
 
         <button type="submit" className="primary-button" disabled={loading}>
           {loading ? "Signing in..." : "Sign in securely"}

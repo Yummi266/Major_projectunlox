@@ -42,7 +42,6 @@ function Packages() {
     fetchPackages();
   }, [fetchPackages]);
 
-  // Compute live statistics
   const totalPackages = packages.length;
   const activePackages = packages.filter((p) => p.status === "Active").length;
   const totalClientsEnrolled = packages.reduce(
@@ -57,7 +56,6 @@ function Packages() {
         )
       : 0;
 
-  // Filter packages by search query
   const displayedPackages = packages.filter((p) => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
@@ -81,7 +79,7 @@ function Packages() {
             setSearchQuery={setSearchQuery}
           />
 
-          {/* Quick Metrics Cards */}
+          {}
           <div className="packages-stats-row">
             <div className="package-stat-card">
               <span>Total Packages</span>
@@ -115,7 +113,7 @@ function Packages() {
         </main>
       </div>
 
-      {/* Modals */}
+      {}
       <CreatePackageModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}

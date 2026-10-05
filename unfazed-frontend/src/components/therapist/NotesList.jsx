@@ -24,7 +24,6 @@ function NotesList({ refreshKey, onNewNote }) {
   const [selectedNote, setSelectedNote] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
 
-  // Fetch real clinical notes from MongoDB backend
   useEffect(() => {
     const fetchNotes = async () => {
       setLoading(true);
@@ -46,7 +45,6 @@ function NotesList({ refreshKey, onNewNote }) {
     fetchNotes();
   }, [refreshKey]);
 
-  // Handle Note Deletion
   const handleDeleteNote = async (id, clientName) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete this clinical note for "${clientName || "Client"}"?`
@@ -92,7 +90,7 @@ function NotesList({ refreshKey, onNewNote }) {
         </div>
 
         <div className="notes-header-actions">
-          {/* Status Filter Tabs */}
+          {}
           <div className="notes-status-tabs">
             <button
               type="button"
@@ -117,7 +115,7 @@ function NotesList({ refreshKey, onNewNote }) {
             </button>
           </div>
 
-          {/* Search Box */}
+          {}
           <div className="notes-search">
             <SearchIcon size={14} className="notes-search-icon" />
             <input
@@ -170,7 +168,7 @@ function NotesList({ refreshKey, onNewNote }) {
 
             return (
               <div className="note-row" key={note._id}>
-                {/* 1. Client Avatar & Date */}
+                {}
                 <div className="note-client">
                   <div className="note-avatar">{initials}</div>
                   <div className="note-client-meta">
@@ -179,10 +177,10 @@ function NotesList({ refreshKey, onNewNote }) {
                   </div>
                 </div>
 
-                {/* 2. Session */}
+                {}
                 <span className="note-session-badge">{note.sessionNumber}</span>
 
-                {/* 3. Note Preview */}
+                {}
                 <div
                   className="note-preview"
                   onClick={() => setSelectedNote(note)}
@@ -191,7 +189,7 @@ function NotesList({ refreshKey, onNewNote }) {
                   {note.preview || note.content}
                 </div>
 
-                {/* 4. Status */}
+                {}
                 <span
                   className={`note-status ${
                     note.status === "Draft" ? "draft" : "completed"
@@ -200,10 +198,10 @@ function NotesList({ refreshKey, onNewNote }) {
                   {note.status}
                 </span>
 
-                {/* 5. Relative Updated */}
+                {}
                 <span className="note-updated">{relativeUpdated}</span>
 
-                {/* 6. Actions */}
+                {}
                 <div className="note-actions text-right">
                   <button
                     type="button"
@@ -245,7 +243,7 @@ function NotesList({ refreshKey, onNewNote }) {
         )}
       </div>
 
-      {/* Modal to view full note */}
+      {}
       {selectedNote && (
         <ViewNoteModal
           note={selectedNote}

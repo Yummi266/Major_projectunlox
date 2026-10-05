@@ -23,7 +23,6 @@ function PackageSessions({ packageProgress, onPackageSelected }) {
     fetchPackages();
   }, []);
 
-  // Generate slots for each session in package
   const sessionSlots = Array.from({ length: total }, (_, i) => {
     const sessionNum = i + 1;
     const isCompleted = sessionNum <= used;
@@ -38,7 +37,7 @@ function PackageSessions({ packageProgress, onPackageSelected }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-      {/* Session Quota Breakdown */}
+      {}
       <section className="package-sessions-card">
         <div className="package-sessions-header">
           <h3>Your Session Quota Breakdown</h3>
@@ -73,7 +72,7 @@ function PackageSessions({ packageProgress, onPackageSelected }) {
         </div>
       </section>
 
-      {/* Available Care Plans to Upgrade / Renew */}
+      {}
       <section className="explore-packages-card">
         <div className="explore-packages-header">
           <h3>Explore or Renew Therapy Packages</h3>

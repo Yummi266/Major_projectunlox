@@ -5,11 +5,8 @@ const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Apply protect & authorize("therapist") to all clinical note routes
 router.use(protect, authorize("therapist"));
 
-// @desc    Get all clinical notes strictly for the authenticated therapist
-// @route   GET /api/notes
 router.get("/", async (req, res) => {
   try {
     const { search, status } = req.query;
@@ -53,8 +50,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// @desc    Get single note strictly belonging to authenticated therapist
-// @route   GET /api/notes/:id
 router.get("/:id", async (req, res) => {
   try {
     const note = await Note.findOne({
@@ -77,8 +72,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// @desc    Create new clinical note strictly for authenticated therapist
-// @route   POST /api/notes
 router.post("/", async (req, res) => {
   try {
     const {
@@ -138,8 +131,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// @desc    Update clinical note strictly for owning therapist
-// @route   PUT /api/notes/:id
 router.put("/:id", async (req, res) => {
   try {
     const { content, status, sessionNumber, sessionDate, tags } = req.body;
@@ -174,8 +165,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// @desc    Delete clinical note strictly for owning therapist
-// @route   DELETE /api/notes/:id
 router.delete("/:id", async (req, res) => {
   try {
     const therapistId = req.user._id;

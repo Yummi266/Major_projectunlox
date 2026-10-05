@@ -1,0 +1,336 @@
+.notification-dropdown-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-bell-btn {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #dbe5ec;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #4b6b82;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s ease;
+}
+
+.notification-bell-btn:hover {
+  background: #f0f6fa;
+  color: #174d73;
+  border-color: #bcd1e0;
+}
+
+.notification-bell-btn.active {
+  background: #e6f0f7;
+  color: #174d73;
+  border-color: #92b8d0;
+  box-shadow: 0 0 0 3px rgba(23, 77, 115, 0.1);
+}
+
+.notification-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: #d93838;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(217, 56, 56, 0.3);
+  line-height: 1;
+  animation: notifPulse 2.5s infinite;
+}
+
+@keyframes notifPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.notification-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 380px;
+  max-width: 90vw;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #dce7ee;
+  box-shadow: 0 14px 40px rgba(18, 54, 80, 0.14), 0 2px 8px rgba(18, 54, 80, 0.04);
+  z-index: 1000;
+  overflow: hidden;
+  animation: popoverFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popoverFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.notification-popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid #edf3f7;
+  background: #fafcfe;
+}
+
+.notification-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notification-header-title h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #174d73;
+}
+
+.notification-unread-pill {
+  background: #e2eef6;
+  color: #174d73;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 12px;
+}
+
+.notification-mark-all-btn {
+  background: none;
+  border: none;
+  color: #2b7a9e;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.notification-mark-all-btn:hover:not(:disabled) {
+  background: #eaf3f8;
+  color: #174d73;
+}
+
+.notification-mark-all-btn:disabled {
+  color: #a4bcc9;
+  cursor: default;
+}
+
+.notification-popover-body {
+  max-height: 380px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.notification-popover-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.notification-popover-body::-webkit-scrollbar-thumb {
+  background: #cfdce4;
+  border-radius: 10px;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f4f7;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  position: relative;
+}
+
+.notification-item:hover {
+  background: #f6fafd;
+}
+
+.notification-item.unread {
+  background: #f0f7fb;
+}
+
+.notification-item.unread:hover {
+  background: #e7f2f8;
+}
+
+.notification-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.notification-icon-appointment {
+  background: #e5f6fd;
+  color: #0288d1;
+}
+
+.notification-icon-message {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.notification-icon-payment,
+.notification-icon-invoice {
+  background: #fef3e6;
+  color: #d97706;
+}
+
+.notification-icon-package {
+  background: #f3e8ff;
+  color: #7e22ce;
+}
+
+.notification-icon-system {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-content-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.notification-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #174d73;
+}
+
+.notification-time {
+  font-size: 10.5px;
+  color: #8da4b4;
+  white-space: nowrap;
+}
+
+.notification-message {
+  margin: 0;
+  font-size: 12px;
+  color: #4b6678;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.notification-unread-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #0284c7;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.notification-delete-btn {
+  background: none;
+  border: none;
+  color: #a4bcc9;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.15s ease;
+  margin-left: 4px;
+}
+
+.notification-item:hover .notification-delete-btn {
+  opacity: 1;
+}
+
+.notification-delete-btn:hover {
+  color: #c93b3b;
+  background: #fee2e2;
+}
+
+.notification-empty {
+  padding: 36px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.notification-empty-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #f0f6fa;
+  color: #7b9bb0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.notification-empty-title {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #244d6a;
+}
+
+.notification-empty-text {
+  margin: 0;
+  font-size: 12px;
+  color: #7897ab;
+  max-width: 240px;
+  line-height: 1.4;
+}
+
+.notification-popover-footer {
+  padding: 10px 16px;
+  background: #f8fafc;
+  border-top: 1px solid #edf3f7;
+  text-align: center;
+  font-size: 11px;
+  color: #7c95a6;
+}
+
+@media (max-width: 480px) {
+  .notification-popover {
+    width: 320px;
+    right: -40px;
+  }
+}

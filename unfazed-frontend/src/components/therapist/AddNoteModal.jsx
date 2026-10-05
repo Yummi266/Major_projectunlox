@@ -35,7 +35,6 @@ function AddNoteModal({ onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Load clients from MongoDB
   useEffect(() => {
     const loadClients = async () => {
       try {
@@ -135,7 +134,7 @@ function AddNoteModal({ onClose, onSuccess }) {
 
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="modal-row-grid">
-            {/* Client Selection */}
+            {}
             <div className="modal-field">
               <label htmlFor="note-client-select">Client *</label>
               {clients.length > 0 ? (
@@ -163,7 +162,7 @@ function AddNoteModal({ onClose, onSuccess }) {
               )}
             </div>
 
-            {/* Session Number */}
+            {}
             <div className="modal-field">
               <label htmlFor="note-session-number">Session</label>
               <input
@@ -177,7 +176,7 @@ function AddNoteModal({ onClose, onSuccess }) {
           </div>
 
           <div className="modal-row-grid">
-            {/* Session Date */}
+            {}
             <div className="modal-field">
               <label htmlFor="note-session-date">Date</label>
               <input
@@ -188,7 +187,7 @@ function AddNoteModal({ onClose, onSuccess }) {
               />
             </div>
 
-            {/* Note Status */}
+            {}
             <div className="modal-field">
               <label htmlFor="note-status-select">Status</label>
               <select
@@ -202,7 +201,7 @@ function AddNoteModal({ onClose, onSuccess }) {
             </div>
           </div>
 
-          {/* Clinical Note Body */}
+          {}
           <div className="modal-field">
             <label htmlFor="note-content">Clinical Content & Observations *</label>
             <textarea
@@ -215,7 +214,7 @@ function AddNoteModal({ onClose, onSuccess }) {
             />
           </div>
 
-          {/* Tags */}
+          {}
           <div className="modal-field">
             <label htmlFor="note-tags">Focus Tags (optional)</label>
             <input

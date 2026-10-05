@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-// Lightweight, nuanced category icons
 function ClockAlertIcon({ size = 16 }) {
   return (
     <svg
@@ -78,7 +77,6 @@ function AttentionCard() {
             const firstClient = clientList[0];
             const secondClient = clientList[1] || clientList[0];
 
-            // 1. Check-in Overdue (Soft pale pink / coral background with dark text)
             attentionList.push({
               type: "danger",
               icon: <ClockAlertIcon size={16} />,
@@ -88,7 +86,6 @@ function AttentionCard() {
               link: "/clients",
             });
 
-            // 2. Invoice Pending (Soft amber / warm light yellow background with dark text)
             const secondClientPkg = secondClient.package || "Session Plan";
             attentionList.push({
               type: "warning",
@@ -99,7 +96,6 @@ function AttentionCard() {
               link: "/clients",
             });
 
-            // 3. Package Ending Soon (Light ice-blue background matching sidebar)
             const endingClient =
               clientList.find((c) => (c.totalSessions || 6) - (c.sessionsUsed || 0) <= 2) ||
               firstClient;

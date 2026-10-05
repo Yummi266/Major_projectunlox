@@ -26,12 +26,12 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Public Pages */}
+        {}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Protected Therapist Pages */}
+        {}
         <Route
           path="/dashboard"
           element={
@@ -104,7 +104,7 @@ function App() {
           }
         />
 
-        {/* Protected Client Pages */}
+        {}
         <Route
           path="/client/dashboard"
           element={
@@ -159,7 +159,7 @@ function App() {
           }
         />
 
-        {/* Unknown Route */}
+        {}
         <Route path="*" element={<Navigate to="/" replace />} />
 
       </Routes>

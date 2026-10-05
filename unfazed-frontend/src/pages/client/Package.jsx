@@ -47,7 +47,6 @@ function ClientPackage() {
       const token = authService.getToken();
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-      // 1. Create order on backend
       const orderRes = await axios.post(
         "http://localhost:5000/api/payments/create-order",
         { packageId: selectedPlanForRenewal._id },
@@ -63,7 +62,6 @@ function ClientPackage() {
         throw new Error("Razorpay SDK is not loaded. Please ensure you have an active internet connection.");
       }
 
-      // Open official Razorpay Checkout modal
       const options = {
         key: orderData.keyId,
         amount: orderData.order.amount,
@@ -171,7 +169,7 @@ function ClientPackage() {
             />
           </div>
 
-          {/* Plan Confirmation Modal */}
+          {}
           {selectedPlanForRenewal && (
             <div className="book-modal-overlay">
               <div className="book-modal">
