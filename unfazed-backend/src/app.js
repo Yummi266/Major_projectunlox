@@ -16,8 +16,13 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
-
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173', // Keep this for local testing on your computer
+    process.env.FRONTEND_URL // This grabs your Vercel link automatically from Render!
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 app.get("/", (req, res) => {
