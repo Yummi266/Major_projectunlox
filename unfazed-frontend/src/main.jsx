@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import App from "./App";
+import "./api/setupAxios";
 import "./services/authService";
 
 import "./styles/auth.css";

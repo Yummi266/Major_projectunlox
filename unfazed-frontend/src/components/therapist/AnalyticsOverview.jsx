@@ -1,234 +1,198 @@
-function AnalyticsOverview({ data, loading, periodLabel = "Last 6 months" }) {
-  if (loading) {
+function AnalyticsOverview() {
+    const revenue = [
+        { month: "May", value: 52 },
+        { month: "Jun", value: 68 },
+        { month: "Jul", value: 61 },
+        { month: "Aug", value: 78 },
+        { month: "Sep", value: 72 },
+        { month: "Oct", value: 88 }
+    ];
+
     return (
-      <div style={{ padding: "60px 16px", textAlign: "center", color: "#6a889d" }}>
-        Loading practice analytics from database...
-      </div>
-    );
-  }
+        <div className="analytics-wrapper">
 
-  const stats = data?.stats || {
-    totalRevenue: "₹0",
-    revenueChange: "+0% vs last month",
-    activeClients: 0,
-    activeClientsChange: "+0 this month",
-    sessionsHeld: 0,
-    sessionsHeldChange: "+0 this month",
-    noShowRate: "0%",
-    noShowChange: "0% lower"
-  };
+            <section className="analytics-stats">
 
-  const revenueChart = data?.revenueChart || [];
-  const sessionSummary = data?.sessionSummary || {
-    scheduled: 0,
-    completed: 0,
-    cancelled: 0,
-    noShow: 0
-  };
+                <div className="analytics-stat-card">
+                    <span>Total Revenue</span>
+                    <strong>₹184,200</strong>
+                    <small>+12.4% vs last month</small>
+                </div>
 
-  const clientActivity = data?.clientActivity || {
-    active: 0,
-    activePct: 100,
-    new: 0,
-    newPct: 0,
-    completed: 0,
-    completedPct: 0
-  };
+                <div className="analytics-stat-card">
+                    <span>Active Clients</span>
+                    <strong>18</strong>
+                    <small>+3 this month</small>
+                </div>
 
-  const practiceOverview = data?.practiceOverview || {
-    averageSessionsPerClient: "0.0",
-    packageUtilization: "0%",
-    clientRetention: "100%"
-  };
+                <div className="analytics-stat-card">
+                    <span>Sessions Held</span>
+                    <strong>42</strong>
+                    <small>+8 this month</small>
+                </div>
 
-  const revenues = revenueChart.map((r) => r.revenue || 0);
-  const maxRev = Math.max(...revenues, 15000);
-  const yAxis = [
-    `₹${Math.round(maxRev / 1000)}k`,
-    `₹${Math.round((maxRev * 0.75) / 1000)}k`,
-    `₹${Math.round((maxRev * 0.5) / 1000)}k`,
-    `₹${Math.round((maxRev * 0.25) / 1000)}k`,
-    "₹0"
-  ];
+                <div className="analytics-stat-card">
+                    <span>No-show Rate</span>
+                    <strong>4.2%</strong>
+                    <small>1.1% lower</small>
+                </div>
 
-  return (
-    <div className="analytics-wrapper">
-      {}
-      <section className="analytics-stats">
-        <div className="analytics-stat-card">
-          <span>Total Revenue</span>
-          <strong>{stats.totalRevenue}</strong>
-          <small>{stats.revenueChange}</small>
-        </div>
+            </section>
 
-        <div className="analytics-stat-card">
-          <span>Active Clients</span>
-          <strong>{stats.activeClients}</strong>
-          <small>{stats.activeClientsChange}</small>
-        </div>
+            <section className="analytics-main-grid">
 
-        <div className="analytics-stat-card">
-          <span>Sessions Held</span>
-          <strong>{stats.sessionsHeld}</strong>
-          <small>{stats.sessionsHeldChange}</small>
-        </div>
-
-        <div className="analytics-stat-card">
-          <span>No-show Rate</span>
-          <strong>{stats.noShowRate}</strong>
-          <small>{stats.noShowChange}</small>
-        </div>
-      </section>
-
-      {}
-      <section className="analytics-main-grid">
-        <div className="analytics-card revenue-chart-card">
-          <div className="analytics-card-header">
-            <div>
-              <h2>Revenue Trend</h2>
-              <span>Revenue over the {periodLabel.toLowerCase()}</span>
-            </div>
-          </div>
-
-          <div className="revenue-chart">
-            <div className="chart-y-axis">
-              {yAxis.map((val, idx) => (
-                <span key={idx}>{val}</span>
-              ))}
-            </div>
-
-            <div className="chart-area">
-              <div className="chart-lines">
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-
-              <div className="chart-bars">
-                {revenueChart.map((item) => (
-                  <div
-                    className="chart-column"
-                    key={item.month}
-                    title={`${item.month}: ${item.formattedRevenue || '₹0'}`}
-                  >
-                    <div className="chart-tooltip">
-                      {item.formattedRevenue}
+                <div className="analytics-card revenue-chart-card">
+                    <div className="analytics-card-header">
+                        <div>
+                            <h2>Revenue Trend</h2>
+                            <span>Revenue over the last 6 months</span>
+                        </div>
                     </div>
 
-                    <div
-                      className="chart-bar"
-                      style={{
-                        height: `${item.value}%`
-                      }}
-                    ></div>
+                    <div className="revenue-chart">
 
-                    <span>{item.month}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+                        <div className="chart-y-axis">
+                            <span>₹20k</span>
+                            <span>₹15k</span>
+                            <span>₹10k</span>
+                            <span>₹5k</span>
+                            <span>₹0</span>
+                        </div>
+
+                        <div className="chart-area">
+                            <div className="chart-lines">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+
+                            <div className="chart-bars">
+                                {revenue.map((item) => (
+                                    <div className="chart-column" key={item.month}>
+                                        <div
+                                            className="chart-bar"
+                                            style={{
+                                                height: `${item.value}%`
+                                            }}
+                                        ></div>
+
+                                        <span>{item.month}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div className="analytics-card session-summary-card">
+                    <div className="analytics-card-header">
+                        <div>
+                            <h2>Session Summary</h2>
+                            <span>This month</span>
+                        </div>
+                    </div>
+
+                    <div className="session-summary">
+
+                        <div className="summary-item">
+                            <span>Scheduled</span>
+                            <strong>46</strong>
+                        </div>
+
+                        <div className="summary-item">
+                            <span>Completed</span>
+                            <strong>42</strong>
+                        </div>
+
+                        <div className="summary-item">
+                            <span>Cancelled</span>
+                            <strong>2</strong>
+                        </div>
+
+                        <div className="summary-item">
+                            <span>No-show</span>
+                            <strong>2</strong>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
+
+            <section className="analytics-bottom-grid">
+
+                <div className="analytics-card">
+                    <div className="analytics-card-header">
+                        <div>
+                            <h2>Client Activity</h2>
+                            <span>Current client distribution</span>
+                        </div>
+                    </div>
+
+                    <div className="client-activity">
+
+                        <div className="activity-bar">
+                            <span>Active</span>
+                            <div>
+                                <i style={{ width: "78%" }}></i>
+                            </div>
+                            <strong>18</strong>
+                        </div>
+
+                        <div className="activity-bar">
+                            <span>New</span>
+                            <div>
+                                <i style={{ width: "35%" }}></i>
+                            </div>
+                            <strong>6</strong>
+                        </div>
+
+                        <div className="activity-bar">
+                            <span>Completed</span>
+                            <div>
+                                <i style={{ width: "52%" }}></i>
+                            </div>
+                            <strong>9</strong>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div className="analytics-card">
+                    <div className="analytics-card-header">
+                        <div>
+                            <h2>Practice Overview</h2>
+                            <span>Current performance</span>
+                        </div>
+                    </div>
+
+                    <div className="practice-overview">
+
+                        <div>
+                            <span>Average sessions / client</span>
+                            <strong>4.7</strong>
+                        </div>
+
+                        <div>
+                            <span>Package utilization</span>
+                            <strong>76%</strong>
+                        </div>
+
+                        <div>
+                            <span>Client retention</span>
+                            <strong>89%</strong>
+                        </div>
+
+                    </div>
+                </div>
+
+            </section>
+
         </div>
-
-        <div className="analytics-card session-summary-card">
-          <div className="analytics-card-header">
-            <div>
-              <h2>Session Summary</h2>
-              <span>Active period breakdown</span>
-            </div>
-          </div>
-
-          <div className="session-summary">
-            <div className="summary-item">
-              <span>Scheduled</span>
-              <strong>{sessionSummary.scheduled}</strong>
-            </div>
-
-            <div className="summary-item">
-              <span>Completed</span>
-              <strong>{sessionSummary.completed}</strong>
-            </div>
-
-            <div className="summary-item">
-              <span>Cancelled</span>
-              <strong>{sessionSummary.cancelled}</strong>
-            </div>
-
-            <div className="summary-item">
-              <span>No-show</span>
-              <strong>{sessionSummary.noShow}</strong>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {}
-      <section className="analytics-bottom-grid">
-        <div className="analytics-card">
-          <div className="analytics-card-header">
-            <div>
-              <h2>Client Activity</h2>
-              <span>Current client distribution</span>
-            </div>
-          </div>
-
-          <div className="client-activity">
-            <div className="activity-bar">
-              <span>Active</span>
-              <div>
-                <i style={{ width: `${clientActivity.activePct}%` }}></i>
-              </div>
-              <strong>{clientActivity.active}</strong>
-            </div>
-
-            <div className="activity-bar">
-              <span>New</span>
-              <div>
-                <i style={{ width: `${clientActivity.newPct}%` }}></i>
-              </div>
-              <strong>{clientActivity.new}</strong>
-            </div>
-
-            <div className="activity-bar">
-              <span>Completed</span>
-              <div>
-                <i style={{ width: `${clientActivity.completedPct}%` }}></i>
-              </div>
-              <strong>{clientActivity.completed}</strong>
-            </div>
-          </div>
-        </div>
-
-        <div className="analytics-card">
-          <div className="analytics-card-header">
-            <div>
-              <h2>Practice Overview</h2>
-              <span>Current performance</span>
-            </div>
-          </div>
-
-          <div className="practice-overview">
-            <div>
-              <span>Average sessions / client</span>
-              <strong>{practiceOverview.averageSessionsPerClient}</strong>
-            </div>
-
-            <div>
-              <span>Package utilization</span>
-              <strong>{practiceOverview.packageUtilization}</strong>
-            </div>
-
-            <div>
-              <span>Client retention</span>
-              <strong>{practiceOverview.clientRetention}</strong>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
+    );
 }
 
 export default AnalyticsOverview;
